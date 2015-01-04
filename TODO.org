@@ -1,0 +1,33 @@
+#+TODO: TODO DOING | DONE CNCL
+
+* Release #1 (non-public)
+** Parse GEDCOM into stream of records
+** Serve up file header/meta data 
+** "Single Page" app showing file meta data
+* Release #2 (public proof of concept)
+** Filter out sensitive data
+** Serve up records by XREF
+** Landing page with my data on it
+** About Page with explanation
+* Release #3 (fully public)
+** Follow links on person to see family
+** Follow links on family to see other people
+* Release #4 
+** User can search for specific person (first & last name)
+** Search can return multiple matches
+* Release #5 
+** User can send me an email with data to add
+
+
+* Backlog
+** URL for person search so it can be emailed to someone
+** Display actual trees back from a person
+** Display actual trees forward from a person
+** Sibling display
+** German translation
+** Itality translation
+** "Responsive" Design
+** Display can handle UTF-8
+** Automated process to export gedcom & deploy to app
+** Email encoded for UTF-8
+** Email contains unique subject for easy filtering
