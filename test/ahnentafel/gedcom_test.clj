@@ -4,7 +4,7 @@
 
 (deftest reader
   (testing "usual behavior"
-    (let [lines (read-resource "test/simple.ged")]
+    (let [lines (read-resource "simple.ged")]
       (is (= '("0 HEAD" "1 CHAR ASCII") (take 2 lines)))
       (is (= "0 TRLR" (first (reverse lines))))))
 
