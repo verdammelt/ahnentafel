@@ -12,12 +12,14 @@
     (is (nil? (read-resource "does-not-exist.ged")))))
 
 (deftest parsing-lines
-  (testing "well formed lines"
-    (is (= {:level 0 :tag "HEAD" :value nil :xref nil} (parse-line "0 HEAD")))
-    (is (= {:level 2 :tag "HEAD" :value nil :xref nil} (parse-line "2 HEAD")))
-    (is (= {:level 10 :tag "HEAD" :value nil :xref nil} (parse-line "10 HEAD")))
-    (is (= {:level 2 :tag "DATE" :value "29 FEB 2000" :xref nil} (parse-line "2 DATE 29 FEB 2000")))
-    (is (= {:level 0 :tag "INDI" :value nil :xref "@FATHER@"} (parse-line "0 @FATHER@ INDI"))))
+  (testing "valid lines"
+    (are [line expected] (= expected (parse-line line))
+         "0 HEAD" {:level 0 :tag "HEAD" :value nil :xref nil}
+         "2 HEAD" {:level 2 :tag "HEAD" :value nil :xref nil}
+         "10 HEAD" {:level 10 :tag "HEAD" :value nil :xref nil}
+         "2 DATE 29 FEB 2000" {:level 2 :tag "DATE" :value "29 FEB 2000" :xref nil}
+         "2 DATE 29 FEB 2000" {:level 2 :tag "DATE" :value "29 FEB 2000" :xref nil}
+         "0 @FATHER@ INDI" {:level 0 :tag "INDI" :value nil :xref "@FATHER@"}))
 
   (testing "error cases"
     (is (thrown? ahnentafel.ParseError (parse-line "abc def")))
