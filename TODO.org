@@ -2,10 +2,11 @@
 
 * Release #1 (non-public)
 ** Parse GEDCOM into stream of records
-*** Read file from disk
-*** chunk into records
-*** parse records into maps
+*** DONE Read file from disk
+*** DONE parse records into maps
+*** TODO chunk into records
 *** Handle some simple cases (CONC, CONT
+*** Handle XREFS
 ** Serve up file header/meta data 
 ** "Single Page" app showing file meta data
 * Release #2 (public proof of concept)
