@@ -5,8 +5,13 @@
    (with-open [rdr (clojure.java.io/reader file)]
      (doall (line-seq rdr)))))
 
-(defn parse-level [line]
+(defn parse-line [line]
   (when (re-find #"^0\d+" line) (throw (ahnentafel.ParseError. line)))
-  (if-let [level (re-find #"^\d+" line)]
-    (Integer. level)
+
+  (if-let [[_ level xref tag value]
+           (re-find #"^(\d+) (@\S+@)?\s?(\S+)\s?(.+)?" line)]
+    {:level (Integer. level)
+     :xref xref
+     :tag tag
+     :value value}
     (throw (ahnentafel.ParseError. line))))
