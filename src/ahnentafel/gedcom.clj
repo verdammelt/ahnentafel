@@ -15,3 +15,14 @@
      :tag tag
      :value value}
     (throw (ahnentafel.ParseError. line))))
+
+(defn group-records
+  ([records] (group-records (rest records) (first records) nil))
+  ([records current-record new-records]
+   (let [[subordinate-records remaining-records]
+         (split-with (fn [r] (< (:level current-record)
+                               (:level r)))
+                     records)]
+     (println (list records current-record new-records))
+     (println (list subordinate-records remaining-records))))
+  )

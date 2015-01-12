@@ -24,3 +24,25 @@
   (testing "error cases"
     (is (thrown? ahnentafel.ParseError (parse-line "abc def")))
     (is (thrown? ahnentafel.ParseError (parse-line "01 CHAR ASCII")))))
+
+(deftest grouping-records
+  (is (= '[{:level 0 :tag "HEAD" :subordinate-lines nil}
+           {:level 0 :tag "INDI" :subordinate-lines nil}]
+         (group-records '({:level 0 :tag "HEAD" :subordinate-lines nil}
+                          {:level 0 :tag "INDI" :subordinate-lines nil}))))
+  (is (= [{:level 0
+           :tag "HEAD"
+           :subordinate-lines [{:level 1 :tag "CHAR" :subordinate-lines nil}]}]
+         (group-records '({:level 0 :tag "HEAD"} {:level 1 :tag "CHAR"}))))
+  (is (= [{:level  0 :tag "SUBM"
+           :subordinate-lines [{:level 1 :tag "NAME" :value "/Submitter/" :subordinate-lines nil}
+                               {:level 1 :tag "ADDR" :value "Submitters address"
+                                :subordinate-lines [{:level 2 :tag "CONT" :value "address continued here" :subordinate-lines nil}]}]}
+          {:level  0 :tag "INDI"}]
+         (group-records '({:level 0 :tag "SUBM"}
+                          {:level 1 :tag "NAME" :value "/Submitter/"}
+                          {:level 1 :tag "ADDR" :value "Submitters address"}
+                          {:level 2 :tag "CONT" :value "address continued here"}
+                          {:level 0 :tag "INDI"}))))
+
+  )
