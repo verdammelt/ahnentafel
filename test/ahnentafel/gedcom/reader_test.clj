@@ -1,16 +1,23 @@
 (ns ahnentafel.gedcom.reader-test
-  (:require [ahnentafel.gedcom.reader :refer :all]
+  (:require [ahnentafel.gedcom.reader :refer [read-file]]
             [clojure.test :refer :all]))
 
 (deftest reader
   (testing "usual behavior"
-    (let [lines (read-resource "simple.ged")]
-      (is (= '("0 HEAD" "1 CHAR ASCII") (take 2 lines)))
-      (is (= "0 TRLR" (first (reverse lines))))))
+    (let [records (read-file (clojure.java.io/resource "simple.ged"))]
+      (is (= 7 (count records)))
+
+      (is (= "HEAD" (:tag (first records))))
+      (is (= "CHAR" (:tag (first (:subordinate-lines (first records))))))
+      (is (= "SUBM" (:tag (second records))))
+      (is (= "TRLR" (:tag (first (reverse records)))))))
 
   (testing "error conditions"
-    (is (nil? (read-resource "does-not-exist.ged")))))
+    (is (nil? (read-file "does-not-exist.ged")))))
 
+(def parse-line
+  "Accessing unexported symbol PARSE-LINE."
+  #'ahnentafel.gedcom.reader/parse-line)
 (deftest parsing-lines
   (testing "valid lines"
     (are [line expected] (= expected (parse-line line))
@@ -36,6 +43,9 @@
     (is (thrown? ahnentafel.gedcom.ParseError (parse-line "abc def")))
     (is (thrown? ahnentafel.gedcom.ParseError (parse-line "01 CHAR ASCII")))))
 
+(def group-records
+  "Accessing unexported symbol GROUP-RECORDS."
+  #'ahnentafel.gedcom.reader/group-records)
 (deftest grouping-records
   (is (= (group-records '({:level 0 :tag "HEAD"}
                           {:level 0 :tag "INDI"}))

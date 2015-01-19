@@ -1,12 +1,17 @@
 (ns ahnentafel.gedcom.reader)
 
-(defn read-resource [resource-name]
-  (when-let [file (clojure.java.io/resource resource-name)]
+(defn- read-file-lines [file]
+  "Read all the lines of the file. Returns NIL if file does not exist."
+  (when (.exists (clojure.java.io/as-file file))
     (with-open [rdr (clojure.java.io/reader file)]
       (doall (line-seq rdr)))))
 
-(defn parse-line [line]
-  (when (re-find #"^0\d+" line) (throw (ahnentafel.gedcom.ParseError. line)))
+(defn- parse-line [line]
+  "Parses a single GEDCOM line into a map.
+
+  Throws ahnentafel.gedcom.ParseError if line is not well formatted."
+  (when (re-find #"^0\d+" line)
+    (throw (ahnentafel.gedcom.ParseError. line)))
 
   (if-let [[_ level xref tag value]
            (re-find #"^(\d+) (@\S+@)?\s?(\S+)\s?(.+)?" line)]
@@ -17,10 +22,18 @@
     (throw (ahnentafel.gedcom.ParseError. line))))
 
 (defn- split-out-subordinate-records [records]
+  "Returns a sequence of two sequences. The first contains the records
+  which are subordinate to the first record, the second contains the
+  records which are not subordinate.
+
+  Subordinate records are those following the current record whose
+  level is higher than the current record."
   (letfn [(subordinate-to-first [r] (> (:level r) (:level (first records))))]
     (split-with subordinate-to-first (rest records))))
 
-(defn group-records
+(defn- group-records
+  "Groups the sequence of records into a sequence of records with
+  their subordinate records added with a :subordinate-lines key."
   ([records] (if (seq records)
                (group-records (first records)
                               (split-out-subordinate-records records)
@@ -38,3 +51,12 @@
        (group-records (first unprocessed-records)
                       (split-out-subordinate-records unprocessed-records)
                       (conj-current-with-subordinates))))))
+
+(defn read-file [file]
+  "Read a GEDCOM file into a sequence of records.
+
+  This does minimal parsing by parsing the lines into records and then
+  grouping subordinate-records into parent records."
+  (group-records
+   (map parse-line
+        (read-file-lines file))))
