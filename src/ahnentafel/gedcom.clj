@@ -16,24 +16,28 @@
      :value value}
     (throw (ahnentafel.ParseError. line))))
 
-(defn- records-subordinate-to [record]
-  (fn [r] (> (:level r) (:level record))))
+(defn- split-out-subordinate-records [records]
+  (letfn [(subordinate-to-first [r] (> (:level r) (:level (first records))))]
+   (split-with subordinate-to-first (rest records))))
 
 (defn group-records
   ([records] (group-records (first records)
-                            (split-with (records-subordinate-to (first records)) (rest records))
+                            (split-out-subordinate-records records)
                             []))
   ([current-record [subordinate-records unprocessed-records] processed-records]
-   (println [current-record subordinate-records unprocessed-records processed-records])
-   (cond (and (empty? unprocessed-records) (empty? subordinate-records)) (conj processed-records current-record)
-         (empty? unprocessed-records) (group-records (assoc current-record :subordinate-lines (group-records subordinate-records))
-                                                     (list nil unprocessed-records)
-                                                     processed-records)
-         (empty? subordinate-records) (group-records (first unprocessed-records)
-                                                     (split-with (records-subordinate-to (first unprocessed-records)) (rest unprocessed-records))
-                                                     (conj processed-records current-record))
-         :else (group-records (first unprocessed-records)
-                              (split-with (records-subordinate-to (first unprocessed-records)) (rest unprocessed-records))
-                              (conj processed-records current-record)))
+   (cond (and (empty? unprocessed-records) (empty? subordinate-records))
+         (conj processed-records current-record)
+
+         (empty? unprocessed-records)
+         (group-records (assoc current-record
+                               :subordinate-lines
+                               (group-records subordinate-records))
+                        (list nil unprocessed-records)
+                        processed-records)
+
+         :else
+         (group-records (first unprocessed-records)
+                        (split-out-subordinate-records unprocessed-records)
+                        (conj processed-records current-record)))
    )
 )
