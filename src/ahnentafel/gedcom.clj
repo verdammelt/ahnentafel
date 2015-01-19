@@ -16,13 +16,24 @@
      :value value}
     (throw (ahnentafel.ParseError. line))))
 
+(defn- records-subordinate-to [record]
+  (fn [r] (> (:level r) (:level record))))
+
 (defn group-records
-  ([records] (group-records (rest records) (first records) nil))
-  ([records current-record new-records]
-   (let [[subordinate-records remaining-records]
-         (split-with (fn [r] (< (:level current-record)
-                               (:level r)))
-                     records)]
-     (println (list records current-record new-records))
-     (println (list subordinate-records remaining-records))))
-  )
+  ([records] (group-records (first records)
+                            (split-with (records-subordinate-to (first records)) (rest records))
+                            []))
+  ([current-record [subordinate-records unprocessed-records] processed-records]
+   (println [current-record subordinate-records unprocessed-records processed-records])
+   (cond (and (empty? unprocessed-records) (empty? subordinate-records)) (conj processed-records current-record)
+         (empty? unprocessed-records) (group-records (assoc current-record :subordinate-lines (group-records subordinate-records))
+                                                     (list nil unprocessed-records)
+                                                     processed-records)
+         (empty? subordinate-records) (group-records (first unprocessed-records)
+                                                     (split-with (records-subordinate-to (first unprocessed-records)) (rest unprocessed-records))
+                                                     (conj processed-records current-record))
+         :else (group-records (first unprocessed-records)
+                              (split-with (records-subordinate-to (first unprocessed-records)) (rest unprocessed-records))
+                              (conj processed-records current-record)))
+   )
+)
