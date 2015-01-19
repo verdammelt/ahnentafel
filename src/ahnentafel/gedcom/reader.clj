@@ -21,7 +21,7 @@
     (split-with subordinate-to-first (rest records))))
 
 (defn group-records
-  ([records] (if (not (empty? records))
+  ([records] (if (seq records)
                (group-records (first records)
                               (split-out-subordinate-records records)
                               [])))
