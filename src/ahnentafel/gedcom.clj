@@ -20,24 +20,31 @@
   (letfn [(subordinate-to-first [r] (> (:level r) (:level (first records))))]
    (split-with subordinate-to-first (rest records))))
 
+(defn assoc-if [map key value]
+  (if value (assoc map key value) map))
+
 (defn group-records
-  ([records] (group-records (first records)
-                            (split-out-subordinate-records records)
-                            []))
+  ([records] (if (not (empty? records)) (group-records (first records)
+                                   (split-out-subordinate-records records)
+                                   [])))
   ([current-record [subordinate-records unprocessed-records] processed-records]
-   (cond (and (empty? unprocessed-records) (empty? subordinate-records))
-         (conj processed-records current-record)
+   (cond
+     ;; done with all processing
+     (and (empty? unprocessed-records) (empty? subordinate-records))
+     (conj processed-records current-record)
 
-         (empty? unprocessed-records)
-         (group-records (assoc current-record
-                               :subordinate-lines
-                               (group-records subordinate-records))
-                        (list nil unprocessed-records)
-                        processed-records)
+     ;; only subordinate items left to process
+     (empty? unprocessed-records)
+     (conj processed-records
+           (assoc-if current-record
+                     :subordinate-lines (group-records subordinate-records)))
 
-         :else
-         (group-records (first unprocessed-records)
-                        (split-out-subordinate-records unprocessed-records)
-                        (conj processed-records current-record)))
+     ;; add current record (with subordinates) and move to next record
+     :else
+     (group-records (first unprocessed-records)
+                    (split-out-subordinate-records unprocessed-records)
+                    (conj processed-records
+                          (assoc-if current-record
+                                    :subordinate-lines (group-records subordinate-records)))))
    )
 )
