@@ -1,5 +1,5 @@
-(ns ahnentafel.gedcom-test
-  (:require [ahnentafel.gedcom :refer :all]
+(ns ahnentafel.gedcom.reader-test
+  (:require [ahnentafel.gedcom.reader :refer :all]
             [clojure.test :refer :all]))
 
 (deftest reader

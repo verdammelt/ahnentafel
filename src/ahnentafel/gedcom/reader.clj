@@ -1,4 +1,4 @@
-(ns ahnentafel.gedcom)
+(ns ahnentafel.gedcom.reader)
 
 (defn read-resource [resource-name]
   (when-let [file (clojure.java.io/resource resource-name)]
