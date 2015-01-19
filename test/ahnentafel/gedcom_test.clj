@@ -22,8 +22,8 @@
          "0 @FATHER@ INDI" {:level 0 :tag "INDI" :value nil :xref "@FATHER@"}))
 
   (testing "error cases"
-    (is (thrown? ahnentafel.ParseError (parse-line "abc def")))
-    (is (thrown? ahnentafel.ParseError (parse-line "01 CHAR ASCII")))))
+    (is (thrown? ahnentafel.gedcom.ParseError (parse-line "abc def")))
+    (is (thrown? ahnentafel.gedcom.ParseError (parse-line "01 CHAR ASCII")))))
 
 (deftest grouping-records
   (is (= (group-records '({:level 0 :tag "HEAD"}

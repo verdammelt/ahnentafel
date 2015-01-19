@@ -6,7 +6,7 @@
       (doall (line-seq rdr)))))
 
 (defn parse-line [line]
-  (when (re-find #"^0\d+" line) (throw (ahnentafel.ParseError. line)))
+  (when (re-find #"^0\d+" line) (throw (ahnentafel.gedcom.ParseError. line)))
 
   (if-let [[_ level xref tag value]
            (re-find #"^(\d+) (@\S+@)?\s?(\S+)\s?(.+)?" line)]
@@ -14,7 +14,7 @@
      :xref xref
      :tag tag
      :value value}
-    (throw (ahnentafel.ParseError. line))))
+    (throw (ahnentafel.gedcom.ParseError. line))))
 
 (defn- split-out-subordinate-records [records]
   (letfn [(subordinate-to-first [r] (> (:level r) (:level (first records))))]
