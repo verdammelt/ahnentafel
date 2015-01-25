@@ -13,7 +13,7 @@
   :profiles
   {:dev
    {:resource-paths ["test-resources"]
-    :dependencies [[lein-ancient "0.6.0"]
+    :dependencies [[lein-ancient "0.6.1"]
                    [lein-bikeshed "0.2.0"]
                    [lein-kibit "0.0.8"]]
     :aliases {"check-update" ^{:doc "Check for upgrades to dependencies and plugins."}
