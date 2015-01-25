@@ -1,5 +1,5 @@
 (defproject ahnentafel "0.1.0-SNAPSHOT"
-  :description "Appication to allow browsing of genealogical data."
+  :description "Application to allow browsing of genealogical data."
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
