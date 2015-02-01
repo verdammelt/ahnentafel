@@ -5,6 +5,12 @@
 
 (deftest home-page-handler
   (is (= (app (mock/request :get "/"))
-         {:status 200
+         {:status 302
+          :headers {"Location" "index.html"}
+          :body ""}))
+  (is (= (app (mock/request :get "/unknown"))
+         {:status 404
           :headers {"Content-Type" "text/html"}
-          :body "Hello World."})))
+          :body "/unknown not found."}
+         ))
+  )
