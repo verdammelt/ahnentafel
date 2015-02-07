@@ -7,7 +7,8 @@
   (testing "redirect to index"
     (let [response (app (mock/request :get "/"))]
       (is (= (:status response) 302))
-      (is (= (get-in response [:headers "Location"]) "http://localhost/index.html"))))
+      (is (= (get-in response [:headers "Location"])
+             "http://localhost/index.html"))))
 
   (testing "static file redirect"
     (let [response (app (mock/request :get "/index.html"))]
