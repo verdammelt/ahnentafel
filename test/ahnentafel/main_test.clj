@@ -4,17 +4,11 @@
             [ring.mock.request :as mock]))
 
 (deftest home-page-handler
-  (testing "redirect to index"
-    (let [response (app (mock/request :get "/"))]
-      (is (= (:status response) 302))
-      (is (= (get-in response [:headers "Location"])
-             "http://localhost/index.html"))))
-
   (testing "static file redirect"
-    (let [response (app (mock/request :get "/index.html"))]
+    (let [response (app (mock/request :get "/"))]
       (is (= (:status response) 200))
-      (is (= (.getName (:body response)) "index.html"))
-      (is (re-matches #".*/site/index.html$" (.getPath (:body response))))))
+      (is (.contains (:body response) "Ahnentafel"))
+      (is (.contains (:body response) (System/getProperty "ahnentafel.version")))))
 
   (testing "404 response"
     (let [response (app (mock/request :get "/unknown"))]

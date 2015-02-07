@@ -5,7 +5,8 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [compojure "1.3.1"]
-                 [ring/ring-defaults "0.1.3"]]
+                 [ring/ring-defaults "0.1.3"]
+                 [enlive "1.1.5"]]
   :plugins [[lein-ring "0.9.1"]]
 
   :aot [ahnentafel.gedcom.ParseError]
