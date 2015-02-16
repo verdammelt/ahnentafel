@@ -14,5 +14,6 @@
   (testing "404 response"
     (let [response (app (mock/request :get "/unknown"))]
       (is (= (:status response) 404))
-      (is (= (:body response) "/unknown not found."))
-      (is (= (get-in response [:headers  "Content-Type"]) "text/html")))))
+      (is (.contains (:body response) "/unknown not found."))
+      (is (= (get-in response [:headers  "Content-Type"]) "text/html"))
+      )))
