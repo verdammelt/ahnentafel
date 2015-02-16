@@ -4,13 +4,16 @@
   (:require [ring.middleware.defaults :refer [wrap-defaults site-defaults]])
   (:require [net.cgrand.enlive-html :as html]))
 
-(html/deftemplate main-template "site/templates/index.html" [data]
+;; move these views into a new mainspace (to encapsulate enlive)
+(html/defsnippet home-page "site/templates/home.html" [:div] [])
+(html/deftemplate main-template "site/templates/index.html" [contents data]
+  [:#content] (html/substitute (contents))
   [:#version] (html/content (:version data)))
 
 (def app-context {:version (System/getProperty "ahnentafel.version")})
 
 (defroutes main-handler
-  (GET "/" [] (main-template app-context))
+  (GET "/" [] (main-template home-page app-context))
   (ANY "*" request (->  (str (:uri request) " not found.")
                         response/response
                         (response/status 404)

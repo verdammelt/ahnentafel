@@ -4,10 +4,11 @@
             [ring.mock.request :as mock]))
 
 (deftest home-page-handler
-  (testing "static file redirect"
+  (testing "home page"
     (let [response (app (mock/request :get "/"))]
       (is (= (:status response) 200))
       (is (.contains (:body response) "Ahnentafel"))
+      (is (.contains (:body response) "home-contents"))
       (is (.contains (:body response) (System/getProperty "ahnentafel.version")))))
 
   (testing "404 response"
