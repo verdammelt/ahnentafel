@@ -1,18 +1,22 @@
 #+TODO: TODO DOING | DONE CNCL
 
 * Release #1 (non-public)
-** Parse GEDCOM into stream of records
+** DONE Parse GEDCOM into stream of records
 *** DONE Read file from disk
 *** DONE parse records into maps
 *** TODO chunk into records
 *** Handle some simple cases (CONC, CONT
 *** Handle XREFS
-** Serve up file header/meta data 
+** Serve up file header/meta data
 ** "Single Page" app showing file meta data
+*** Pages should be a template file with standard stuff and then specific stuff inside
 * Release #2 (public proof of concept)
 ** Filter out sensitive data
 ** Serve up records by XREF
+*** Server needs to serve up the html of the data or the json depending on if JS is enabled.
 ** Landing page with my data on it
+*** link bar at top.
+*** sprinkle in a small amount of bootstrap
 ** About Page with explanation
 * Release #3 (fully public)
 ** Follow links on person to see family
