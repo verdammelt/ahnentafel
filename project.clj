@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [compojure "1.3.1"]
                  [ring/ring-defaults "0.1.4"]
-                 [enlive "1.1.5"]]
+                 [enlive "1.1.5"]
+                 [environ "1.0.0"]]
   :plugins [[lein-ring "0.9.1"]]
 
   :aot [ahnentafel.gedcom.ParseError]
