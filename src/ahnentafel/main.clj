@@ -1,10 +1,12 @@
 (ns ahnentafel.main
   (:require [ahnentafel.pages.pages :as pages])
+
+  (:require [environ.core :refer [env]])
   (:require [compojure.core :refer :all])
   (:require [ring.util.response :as response])
   (:require [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
-(def app-context {:version (System/getProperty "ahnentafel.version")})
+(def app-context {:version (env :ahnentafel-version)})
 
 (defroutes main-handler
   (GET "/" [] (pages/home-page app-context))
