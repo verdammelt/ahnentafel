@@ -1,5 +1,6 @@
 (ns ahnentafel.main
   (:require [ahnentafel.pages.pages :as pages])
+  (:require [ahnentafel.middleware.logging :refer [simple-logging]])
 
   (:require [environ.core :refer [env]])
   (:require [compojure.core :refer :all])
@@ -16,5 +17,6 @@
                        (response/header "Content-Type" "text/html"))))
 
 (def app
-  (wrap-defaults main-handler
-                 (assoc-in site-defaults [:static :resources] "site")))
+  (simple-logging
+   (wrap-defaults #'main-handler
+                  (assoc-in site-defaults [:static :resources] "site"))))

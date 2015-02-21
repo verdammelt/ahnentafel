@@ -8,6 +8,8 @@
             [ring.adapter.jetty :refer (run-jetty)])
   (:require [ahnentafel.main :refer (app)]))
 
+(alter-var-root #'*out* (constantly *out*))
+
 (def system nil)
 
 (defn all-tests [] (clojure.test/run-all-tests #"ahnentafel.*"))
