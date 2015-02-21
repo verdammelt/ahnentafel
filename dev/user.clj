@@ -10,6 +10,8 @@
 
 (def system nil)
 
+(defn all-tests [] (clojure.test/run-all-tests #"ahnentafel.*"))
+
 (defn stop []
   "Shut down the system, if running."
   (println "Shutting down")
