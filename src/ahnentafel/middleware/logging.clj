@@ -11,5 +11,7 @@
             resp   (handler req)
             finish (System/currentTimeMillis)
             total  (- finish start)]
-        (log "request %s %s (%dms)" request-method uri total)
+        (log "request %s %s (%dms) response: %d"
+             request-method uri total
+             (:status resp))
         resp))))
