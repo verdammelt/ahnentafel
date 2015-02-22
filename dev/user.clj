@@ -6,7 +6,7 @@
             [clojure.test :as test]
             [clojure.tools.namespace.repl :refer (refresh refresh-all)]
             [ring.adapter.jetty :refer (run-jetty)])
-  (:require [ahnentafel.main :refer (app)]))
+  (:require [ahnentafel.main :as main]))
 
 (alter-var-root #'*out* (constantly *out*))
 
@@ -18,16 +18,22 @@
   "Shut down the system, if running."
   (println "Shutting down")
   (alter-var-root #'system
-                  (fn [s] (when s (.stop s)))))
+                  (fn [s] (when s
+                           (.stop (:server s))
+                           nil))))
 
 (defn start
   "Start up the system."
   ([] (start 3000))
   ([port]
    (println "Starting up on port" port)
-   (alter-var-root #'system
-                   (constantly
-                    (run-jetty app {:port port :join? false})))))
+   (let [system (main/system)
+         handler (:handler system)]
+     (alter-var-root #'system
+                     (fn [_]
+                       (assoc system
+                              :server
+                              (run-jetty handler {:port port :join? false})))))))
 
 (defn reset []
   "Stop the running system (if any), refresh namespaces and start the

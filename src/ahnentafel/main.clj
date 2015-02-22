@@ -16,7 +16,13 @@
                        (response/status 404)
                        (response/header "Content-Type" "text/html"))))
 
-(def app
+(def app-old
   (simple-logging
    (wrap-defaults #'main-handler
                   (assoc-in site-defaults [:static :resources] "site"))))
+
+(defn system [] {:handler app-old})
+
+(def ring-handler nil)
+(defn ring-init []
+  (alter-var-root #'ring-handler (fn [_] (:handler (system)))))
