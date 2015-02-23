@@ -1,11 +1,19 @@
 (ns ahnentafel.system
   (:require [ahnentafel.server.handler :refer [make-handler]])
-  (:require [environ.core :refer [env]]))
+  (:require [ahnentafel.gedcom.reader :refer [read-file]])
+
+  (:require [environ.core :refer [env]])
+  (:require [clojure.java.io :refer [resource]]))
 
 (defn system []
-  (let [app-data {:version (env :ahnentafel-version)}
+  (let [file (resource "sample.ged")
+        data (future (read-file file))
+        app-data {:version (env :ahnentafel-version)
+                  :file file
+                  :get-data (fn [] @data)}
         handler (make-handler app-data)]
-    {:app-data app-data :handler handler}))
+    {:app-data app-data
+     :handler handler}))
 
 (defn start [system] system)
 (defn stop [system] system)
