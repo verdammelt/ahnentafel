@@ -11,7 +11,8 @@
 
   :plugins [[lein-ring "0.9.3"]]
 
-  :aot [ahnentafel.gedcom.ParseError]
+  :aot [ahnentafel.gedcom.reading.ParseError]
+
   :ring {:init ahnentafel.system/ring-init
          :handler ahnentafel.system/the-handler}
 
