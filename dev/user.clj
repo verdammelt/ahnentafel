@@ -10,9 +10,27 @@
 
 (alter-var-root #'*out* (constantly *out*))
 
-(def system nil)
+(defn all-tests
+  "Utility function for running all tests in the project namespace."
+  ([] (all-tests ""))
+  ([sub-ns] (clojure.test/run-all-tests (re-pattern (str "ahnentafel" sub-ns ".*")))))
 
-(defn all-tests [] (clojure.test/run-all-tests #"ahnentafel.*"))
+(def system
+  "Var to hold instance of the system"
+  nil)
+
+(defn- stop-server [system]
+  (when-let [server (:server system)]
+    (.stop server)
+    (dissoc system :server)))
+
+(defn- start-server [system port]
+  (let [server (run-jetty (:handler system) {:port port :join? false})]
+    (assoc system :server server)))
+
+(defn init []
+  "Construct the current environment"
+  (alter-var-root #'system (constantly (system/system))))
 
 (defn stop []
   "Shut down the system, if running."
