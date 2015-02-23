@@ -1,12 +1,15 @@
 (ns ahnentafel.system
   (:require [environ.core :refer [env]])
+  (:require [ahnentafel.server.handler :refer [make-handler]])
   (:require [ahnentafel.main]))
 
 (defn system
   "Returns a new instance of the entire system."
   []
-  {:port (:port env)
-   :handler (ahnentafel.main/make-app)})
+  (let [app-data {:port (:port env)
+                  :version (:version env)}
+        handler (make-handler app-data)]
+    (merge {:handler handler} app-data)))
 
 (defn start
   "Start the system up."

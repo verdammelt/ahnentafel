@@ -1,5 +1,5 @@
-(ns ahnentafel.pages.pages-test
-  (:require [ahnentafel.pages.pages :refer :all])
+(ns ahnentafel.server.pages-test
+  (:require [ahnentafel.server.pages :refer :all])
   (:require [clojure.test :refer :all]))
 
 (deftest home-page-test

@@ -1,5 +1,5 @@
-(ns ahnentafel.middleware.logging
-  )
+(ns ahnentafel.server.middleware.logging)
+
 (defn- log [msg & vals]
   (let [line (apply format msg vals)]
     (locking System/out (println line))))
