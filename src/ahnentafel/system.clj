@@ -1,6 +1,6 @@
 (ns ahnentafel.system
   (:require [ahnentafel.server.handler :refer [make-handler]])
-  (:require [ahnentafel.gedcom.reader :refer [read-file]])
+  (:require [ahnentafel.gedcom.reading.reader :refer [read-file]])
 
   (:require [environ.core :refer [env]])
   (:require [clojure.java.io :refer [resource]]))
