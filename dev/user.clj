@@ -6,7 +6,7 @@
             [clojure.test :as test]
             [clojure.tools.namespace.repl :refer (refresh refresh-all)]
             [ring.adapter.jetty :refer (run-jetty)])
-  (:require [ahnentafel.main :as main]))
+  (:require [ahnentafel.system :as system]))
 
 (alter-var-root #'*out* (constantly *out*))
 
@@ -35,7 +35,7 @@
   ([] (start 3000))
   ([port]
    (println "Starting up on port" port)
-   (alter-var-root #'system (fn [_] (start-server (main/system) port)))))
+   (alter-var-root #'system (fn [_] (start-server (system/system) port)))))
 
 (defn reset []
   "Stop the running system (if any), refresh namespaces and start the
