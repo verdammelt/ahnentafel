@@ -1,4 +1,4 @@
-(ns ahnentafel.gedcom.reader)
+(ns ahnentafel.gedcom.reading.reader)
 
 (defn- read-file-lines [file]
   "Read all the lines of the file. Returns NIL if file does not exist."

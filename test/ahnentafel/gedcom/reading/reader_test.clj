@@ -1,5 +1,5 @@
-(ns ahnentafel.gedcom.reader-test
-  (:require [ahnentafel.gedcom.reader :refer [read-file]]
+(ns ahnentafel.gedcom.reading.reader-test
+  (:require [ahnentafel.gedcom.reading.reader :refer [read-file]]
             [clojure.test :refer :all]))
 
 (deftest reader
@@ -17,7 +17,7 @@
 
 (def parse-line
   "Accessing unexported symbol PARSE-LINE."
-  #'ahnentafel.gedcom.reader/parse-line)
+  #'ahnentafel.gedcom.reading.reader/parse-line)
 (deftest parsing-lines
   (testing "valid lines"
     (are [line expected] (= expected (parse-line line))
@@ -45,7 +45,7 @@
 
 (def group-records
   "Accessing unexported symbol GROUP-RECORDS."
-  #'ahnentafel.gedcom.reader/group-records)
+  #'ahnentafel.gedcom.reading.reader/group-records)
 (deftest grouping-records
   (is (= (group-records '({:level 0 :tag "HEAD"}
                           {:level 0 :tag "INDI"}))

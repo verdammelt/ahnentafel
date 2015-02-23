@@ -10,7 +10,8 @@
                  [environ "1.0.0"]]
   :plugins [[lein-ring "0.9.1"]]
 
-  :aot [ahnentafel.gedcom.ParseError]
+  :aot [ahnentafel.gedcom.reading.ParseError]
+
   :ring {:init ahnentafel.system/ring-init
          :handler ahnentafel.system/ring-handler
          :auto-refresh? true}
