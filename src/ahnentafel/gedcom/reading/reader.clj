@@ -1,7 +1,7 @@
 (ns ahnentafel.gedcom.reading.reader
   (:require [ahnentafel.gedcom.reading.lexer :refer [read-file-lines]])
   (:require [ahnentafel.gedcom.reading.parser :refer [parse-lines]])
-  (:require [ahnentafel.gedcom.reading.semantic :refer [group-records]]))
+  (:require [ahnentafel.gedcom.reading.syntax :refer [group-records]]))
 
 (defn read-file [file]
   "Read a GEDCOM file into a sequence of records.

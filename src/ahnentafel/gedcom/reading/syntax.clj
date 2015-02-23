@@ -1,4 +1,4 @@
-(ns ahnentafel.gedcom.reading.semantic)
+(ns ahnentafel.gedcom.reading.syntax)
 
 (defn- split-out-subordinate-records [records]
   "Returns a sequence of two sequences. The first contains the records

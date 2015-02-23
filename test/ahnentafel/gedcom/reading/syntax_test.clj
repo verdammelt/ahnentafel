@@ -1,5 +1,5 @@
-(ns ahnentafel.gedcom.reading.semantic-test
-  (:require [ahnentafel.gedcom.reading.semantic :refer [group-records]]
+(ns ahnentafel.gedcom.reading.syntax-test
+  (:require [ahnentafel.gedcom.reading.syntax :refer [group-records]]
             [clojure.test :refer :all]))
 
 (deftest grouping-records
