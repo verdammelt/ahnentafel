@@ -1,4 +1,4 @@
-(ns ahnentafel.pages.pages
+(ns ahnentafel.server.pages
   (:require [net.cgrand.enlive-html :as html]))
 
 (html/defsnippet home-page-snippet "site/templates/home.html" [:div] [])
