@@ -35,17 +35,29 @@
 (defn stop []
   "Shut down the system, if running."
   (println "Shutting down")
-  (alter-var-root #'system (fn [s] (when s (stop-server s) nil))))
+  (alter-var-root #'system
+                  (fn [s] (when s
+                           (-> s
+                               stop-server
+                               system/stop)))))
 
 (defn start
   "Start up the system."
   ([] (start 3000))
   ([port]
    (println "Starting up on port" port)
-   (alter-var-root #'system (fn [_] (start-server (system/system) port)))))
+   (alter-var-root #'system
+                   (fn [s] (-> s
+                              system/start
+                              (start-server port))))))
+
+(defn go []
+  "Initialize the current development system and start it running."
+  (init)
+  (start))
 
 (defn reset []
   "Stop the running system (if any), refresh namespaces and start the
 system up."
   (stop)
-  (refresh :after 'user/start))
+  (refresh :after 'user/go))

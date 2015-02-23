@@ -7,6 +7,9 @@
         handler (make-handler app-data)]
     {:app-data app-data :handler handler}))
 
+(defn start [system] system)
+(defn stop [system] system)
+
 (def ring-handler nil)
 (defn ring-init []
-  (alter-var-root #'ring-handler (fn [_] (:handler (system)))))
+  (alter-var-root #'ring-handler (fn [_] (-> (system) start :handler))))
