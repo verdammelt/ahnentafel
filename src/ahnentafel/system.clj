@@ -1,16 +1,19 @@
 (ns ahnentafel.system
-  (:require [environ.core :refer [env]])
-  (:require [ahnentafel.server.handler :refer [make-handler]]))
+  (:require [ahnentafel.server.handler :refer [make-handler]])
+  (:require [ahnentafel.gedcom.reader :refer [read-file]])
 
-(defn system
-  "Returns a new instance of the entire system."
-  []
-  (let [app-data {:port (:port env)
-                  :version (:version env)}
+  (:require [environ.core :refer [env]])
+  (:require [clojure.java.io :refer [resource]]))
+
+(defn system []
+  (let [file (resource "sample.ged")
+        data (future (read-file file))
+        app-data {:version (:ahnentafel-version env)
+                  :port (:port env)
+                  :file file
+                  :get-data (fn [] @data)}
         handler (make-handler app-data)]
     (merge {:handler handler} app-data)))
-
-(def the-handler nil)
 
 (defn start
   "Start the system up."
@@ -24,4 +27,5 @@
   (alter-var-root #'the-handler (constantly nil))
   system)
 
+(def the-handler nil)
 (defn ring-init [] (start (system)))
