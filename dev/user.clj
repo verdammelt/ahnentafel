@@ -10,9 +10,10 @@
 
 (alter-var-root #'*out* (constantly *out*))
 
-(defn all-tests []
+(defn all-tests
   "Utility function for running all tests in the project namespace."
-  (clojure.test/run-all-tests #"ahnentafel.*"))
+  ([] (all-tests ""))
+  ([sub-ns] (clojure.test/run-all-tests (re-pattern (str "ahnentafel" sub-ns ".*")))))
 
 (def system
   "Var to hold instance of the system"
