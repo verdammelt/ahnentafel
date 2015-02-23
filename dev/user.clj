@@ -35,23 +35,14 @@
 (defn stop []
   "Shut down the system, if running."
   (println "Shutting down")
-  (alter-var-root #'system
-                  (fn [s] (when s
-                           (.stop (:server s))
-                           nil))))
+  (alter-var-root #'system (fn [s] (when s (stop-server s) nil))))
 
 (defn start
   "Start up the system."
   ([] (start 3000))
   ([port]
    (println "Starting up on port" port)
-   (let [system (main/system)
-         handler (:handler system)]
-     (alter-var-root #'system
-                     (fn [_]
-                       (assoc system
-                              :server
-                              (run-jetty handler {:port port :join? false})))))))
+   (alter-var-root #'system (fn [_] (start-server (main/system) port)))))
 
 (defn reset []
   "Stop the running system (if any), refresh namespaces and start the

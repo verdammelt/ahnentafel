@@ -7,21 +7,21 @@
   (:require [ring.util.response :as response])
   (:require [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
-(def app-context {:version (env :ahnentafel-version)})
-
-(defroutes main-handler
-  (GET "/" [] (pages/home-page app-context))
-  (ANY "*" request (-> (pages/page-not-found (merge request app-context))
-                       response/response
-                       (response/status 404)
-                       (response/header "Content-Type" "text/html"))))
-
-(def app-old
+(defn make-handler [app-data]
   (simple-logging
-   (wrap-defaults #'main-handler
-                  (assoc-in site-defaults [:static :resources] "site"))))
+   (wrap-defaults
+    (routes
+     (GET "/" [] (pages/home-page app-data))
+     (ANY "*" request (-> (pages/page-not-found (merge request app-data))
+                          response/response
+                          (response/status 404)
+                          (response/header "Content-Type" "text/html"))))
+    (assoc-in site-defaults [:static :resources] "site"))))
 
-(defn system [] {:handler app-old})
+(defn system []
+  (let [app-data {:version (env :ahnentafel-version)}
+        handler (make-handler app-data)]
+    {:app-data app-data :handler handler}))
 
 (def ring-handler nil)
 (defn ring-init []
