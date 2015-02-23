@@ -1,4 +1,4 @@
-(ns ahnentafel.main
+(ns ahnentafel.system
   (:require [ahnentafel.server.handler :refer [make-handler]])
   (:require [environ.core :refer [env]]))
 
