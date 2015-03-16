@@ -5,8 +5,9 @@
             [clojure.repl :refer :all]
             [clojure.test :as test]
             [clojure.tools.namespace.repl :refer (refresh refresh-all)]
-            [ring.adapter.jetty :refer (run-jetty)])
-  (:require [ahnentafel.main :refer (app)]))
+            [ring.adapter.jetty :refer (run-jetty)]
+            [environ.core :refer (env)])
+  (:require [ahnentafel.system :as system]))
 
 (alter-var-root #'*out* (constantly *out*))
 
@@ -15,40 +16,43 @@
   ([] (all-tests ""))
   ([sub-ns] (clojure.test/run-all-tests (re-pattern (str "ahnentafel" sub-ns ".*")))))
 
-(def system
-  "Var to hold instance of the system"
-  nil)
+(defn- set-port [port]
+  (alter-var-root #'env assoc :port port))
 
-(defn- stop-server [system]
-  (when-let [server (:server system)]
-    (.stop server)
-    (dissoc system :server)))
+(def system "The System." nil)
 
-(defn- start-server [system port]
-  (let [server (run-jetty (:handler system) {:port port :join? false})]
-    (assoc system :server server)))
-
-(defn init []
-  "Construct the current environment"
-  (alter-var-root #'system (constantly (system/system))))
-
-(defn stop []
-  "Shut down the system, if running."
-  (println "Shutting down")
+(defn init
+  "Constructs the current development system."
+  []
+  (when-not (:port env) (set-port 3000))
   (alter-var-root #'system
-                  (fn [s] (when s (.stop s)))))
+    (constantly (system/system))))
 
 (defn start
-  "Start up the system."
-  ([] (start 3000))
-  ([port]
-   (println "Starting up on port" port)
-   (alter-var-root #'system
-                   (constantly
-                    (run-jetty app {:port port :join? false})))))
+  "Starts the current development system."
+  []
+  (letfn [(start-jetty [s]
+            (let [{:keys [handler port]} s]
+              (assoc s :server
+                     (run-jetty handler
+                                {:port port :join? false}))))]
+    (alter-var-root #'system (fn [s] (-> s system/start start-jetty)))))
 
-(defn reset []
-  "Stop the running system (if any), refresh namespaces and start the
-system up."
+(defn stop
+  "Shuts down and destroys the current development system."
+  []
+  (letfn [(stop-jetty [s]
+            (if-let [server (:server s)]
+              (do (.stop server) (dissoc s :server))
+              s))]
+   (alter-var-root #'system (fn [s] (-> s stop-jetty system/stop)))))
+
+(defn go
+  "Initializes the current development system and starts it running."
+  []
+  (init)
+  (start))
+
+(defn restart []
   (stop)
-  (refresh :after 'user/start))
+  (refresh :after 'user/go))

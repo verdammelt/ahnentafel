@@ -16,7 +16,9 @@
                        (response/status 404)
                        (response/header "Content-Type" "text/html"))))
 
-(def app
+(defn make-app []
   (simple-logging
-   (wrap-defaults #'main-handler
+   (wrap-defaults main-handler
                   (assoc-in site-defaults [:static :resources] "site"))))
+
+(def the-handler nil)
