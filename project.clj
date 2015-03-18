@@ -13,7 +13,7 @@
 
   :aot [ahnentafel.gedcom.ParseError]
   :ring {:init ahnentafel.system/ring-init
-         :handler ahnentafel.main/the-handler}
+         :handler ahnentafel.system/the-handler}
 
   :profiles
   {:dev
