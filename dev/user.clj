@@ -14,7 +14,9 @@
 (defn all-tests
   "Utility function for running all tests in the project namespace."
   ([] (all-tests ""))
-  ([sub-ns] (clojure.test/run-all-tests (re-pattern (str "ahnentafel" sub-ns ".*")))))
+  ([sub-ns]
+   (clojure.test/run-all-tests
+    (re-pattern (str "ahnentafel" sub-ns ".*")))))
 
 (defn- set-port [port]
   (alter-var-root #'env assoc :port port))
