@@ -15,6 +15,8 @@
         handler (make-handler app-data)]
     (merge {:handler handler} app-data)))
 
+(def the-handler nil)
+
 (defn start
   "Start the system up."
   [system]
@@ -27,5 +29,4 @@
   (alter-var-root #'the-handler (constantly nil))
   system)
 
-(def the-handler nil)
 (defn ring-init [] (start (system)))
