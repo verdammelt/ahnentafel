@@ -27,6 +27,7 @@
                    [org.clojure/tools.namespace "0.2.3"]
                    [org.clojure/java.classpath "0.2.0"]
                    [ring/ring-jetty-adapter "1.3.2"]]
+    :repl-options {:init (load "reloaded")}
     :aliases {"check-update" ^{:doc "Check for upgrades to dependencies and plugins."}
               ["ancient" ":all"]
               "lint" ^{:doc "Check code for linting and style errors."}
