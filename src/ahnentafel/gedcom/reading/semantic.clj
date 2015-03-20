@@ -1,36 +1,34 @@
-(ns ahnentafel.gedcom.reading.semantic)
+(ns ahnentafel.gedcom.reading.semantic
+  (:require [clojure.zip :as zip]))
 
-(defn- split-out-subordinate-records [records]
-  "Returns a sequence of two sequences. The first contains the records
-  which are subordinate to the first record, the second contains the
-  records which are not subordinate.
+(defn gedcom-zipper [root]
+  (let [branch? (constantly true)
+        children (fn [node]
+                   (if (map? node) (:subordinate-lines node) seq))
+        make-node (fn [node children]
+                    (if (map? node) (assoc node :subordinate-lines (vec children))
+                        (vec children)))]
+    (zip/zipper branch? children make-node root)))
 
-  Subordinate records are those following the current record whose
-  level is higher than the current record."
-  (letfn [(subordinate-to-first [r] (> (:level r) (:level (first records))))]
-    (split-with subordinate-to-first (rest records))))
-
-(defn- process-subordinate-records [records]
-  "Groups the sequence of records into a sequence of records with
-  their subordinate records added with a :subordinate-lines key."
-  (if (seq records)
-    (loop [current-record (first records)
-           [subordinate-records unprocessed-records] (split-out-subordinate-records records)
-           processed-records []]
-      (letfn [(assoc-if [map key value] (if value (assoc map key value) map))
-              (conj-current-with-subordinates []
-                (conj processed-records
-                      (assoc-if current-record
-                                :subordinate-lines
-                                (process-subordinate-records subordinate-records))))]
-
-        (if (empty? unprocessed-records)
-          (conj-current-with-subordinates)
-          (recur (first unprocessed-records)
-                 (split-out-subordinate-records unprocessed-records)
-                 (conj-current-with-subordinates)))))))
+(defn subordinate-records [records]
+  (letfn [(rewind-to-level [loc level]
+            (if (= (:level (zip/node loc)) level) loc
+                (rewind-to-level (zip/up loc) level)))]
+    (zip/root (reduce (fn [loc rec]
+                        (let [loc-level (:level (zip/node loc))
+                              rec-level (:level rec)]
+                          (if (< loc-level rec-level)
+                            (-> loc
+                                (zip/append-child rec)
+                                zip/down)
+                            (-> loc
+                                (rewind-to-level rec-level)
+                                (zip/insert-right rec)
+                                zip/right))))
+                      (gedcom-zipper {:level -1 :tag "__ROOT__"})
+                      records))))
 
 (defn process-records [records]
   (-> records
-      process-subordinate-records
+      subordinate-records
       ))
