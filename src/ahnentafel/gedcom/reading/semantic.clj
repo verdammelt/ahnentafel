@@ -10,23 +10,27 @@
   (letfn [(subordinate-to-first [r] (> (:level r) (:level (first records))))]
     (split-with subordinate-to-first (rest records))))
 
-(defn group-records
+(defn- process-subordinate-records [records]
   "Groups the sequence of records into a sequence of records with
   their subordinate records added with a :subordinate-lines key."
-  ([records] (if (seq records)
-               (group-records (first records)
-                              (split-out-subordinate-records records)
-                              [])))
-  ([current-record [subordinate-records unprocessed-records] processed-records]
-   (letfn [(assoc-if [map key value] (if value (assoc map key value) map))
-           (conj-current-with-subordinates []
-             (conj processed-records
-                   (assoc-if current-record
-                             :subordinate-lines
-                             (group-records subordinate-records))))]
+  (if (seq records)
+    (loop [current-record (first records)
+           [subordinate-records unprocessed-records] (split-out-subordinate-records records)
+           processed-records []]
+      (letfn [(assoc-if [map key value] (if value (assoc map key value) map))
+              (conj-current-with-subordinates []
+                (conj processed-records
+                      (assoc-if current-record
+                                :subordinate-lines
+                                (process-subordinate-records subordinate-records))))]
 
-     (if (empty? unprocessed-records)
-       (conj-current-with-subordinates)
-       (group-records (first unprocessed-records)
-                      (split-out-subordinate-records unprocessed-records)
-                      (conj-current-with-subordinates))))))
+        (if (empty? unprocessed-records)
+          (conj-current-with-subordinates)
+          (recur (first unprocessed-records)
+                 (split-out-subordinate-records unprocessed-records)
+                 (conj-current-with-subordinates)))))))
+
+(defn process-records [records]
+  (-> records
+      process-subordinate-records
+      ))
