@@ -16,3 +16,7 @@
   ([sub-ns]
    (clojure.test/run-all-tests
     (re-pattern (str "ahnentafel" sub-ns ".*")))))
+
+(defn load-and-go []
+  (load "reloaded")
+  ((ns-resolve *ns* 'go)))

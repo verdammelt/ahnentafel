@@ -1,3 +1,4 @@
+(ns-unalias *ns* 'system)
 (require '[ahnentafel.system :as system])
 
 (defn- set-port [port]
@@ -39,4 +40,4 @@
 
 (defn restart []
   (stop)
-  (refresh :after 'user/go))
+  (refresh :after 'user/load-and-go))

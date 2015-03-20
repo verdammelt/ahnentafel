@@ -15,7 +15,7 @@
         handler (make-handler app-data)]
     (merge {:handler handler} app-data)))
 
-(def the-handler nil)
+(defonce the-handler nil)
 
 (defn start
   "Start the system up."
