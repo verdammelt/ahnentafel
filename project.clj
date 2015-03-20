@@ -24,8 +24,8 @@
               [lein-bikeshed "0.2.0"]
               [lein-kibit "0.0.8"]]
     :dependencies [[ring/ring-mock "0.2.0"]
-                   [org.clojure/tools.namespace "0.2.3"]
-                   [org.clojure/java.classpath "0.2.0"]
+                   [org.clojure/tools.namespace "0.2.10"]
+                   [org.clojure/java.classpath "0.2.2"]
                    [ring/ring-jetty-adapter "1.3.2"]]
     :repl-options {:init (load "reloaded")}
     :aliases {"check-update" ^{:doc "Check for upgrades to dependencies and plugins."}
