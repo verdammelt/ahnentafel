@@ -48,8 +48,35 @@
                                :tag "INDI"
                                :subordinate-lines [{:level 1 :tag "NAME"}]}]}))
 
-  ;; (is (= (process-records '({:level 0 :tag "STUFF" :value "Bob"}
-  ;;                           {:level 1 :tag "CONT" :value "more Bob"}))
-  ;;        {:level -1 :tag "__ROOT__"
-  ;;         :subordinate-lines [{:level 0 :tag "STUFF" :value "Bob\nmore Bob"}]}))
-  )
+  (is (= (process-records '({:level 0 :tag "STUFF" :value "Bob"}
+                            {:level 1 :tag "CONT" :value "more Bob"}))
+         {:level -1 :tag "__ROOT__"
+          :subordinate-lines [{:level 0 :tag "STUFF" :value "Bob\nmore Bob"
+                               :subordinate-lines []}]}))
+
+  (is (= (process-records '({:level 0 :tag "STUFF" :value "Bob"}
+                            {:level 1 :tag "CONC" :value " more Bob"}))
+         {:level -1 :tag "__ROOT__"
+          :subordinate-lines [{:level 0 :tag "STUFF" :value "Bob more Bob"
+                               :subordinate-lines []}]}))
+
+  (let [processed-records
+        (:subordinate-lines
+         (process-records '({:level 0 :tag "STUFF" :value "Bob"}
+                            {:level 1 :tag "CONT" :value "more Bob"}
+                            {:level 1 :tag "CONT" :value "even more Bob"}
+                            {:level 1 :tag "OTHER" :value "stuff"}
+                            {:level 2 :tag "CONC" :value " and things"}
+                            {:level 0 :tag "AGAIN" :value "here we go"}
+                            {:level 1 :tag "CONC" :value " again"})))]
+    (is (= "Bob\nmore Bob\neven more Bob" (-> processed-records (nth 0) :value)))
+    (is (= "stuff and things"
+           (-> processed-records
+               (nth 0)
+               :subordinate-lines
+               (nth 0)
+               :value)))
+    (is (= "here we go again"
+           (-> processed-records
+               (nth 1)
+               :value)))))
