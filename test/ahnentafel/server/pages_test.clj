@@ -17,14 +17,14 @@
                                       :get-data (fn [] 'fake-data)
                                       :file "/path/to/test.ged"}))]
       (is (.contains page "<title>Ahnentafel</title>"))
+      (is (.contains page "23 records in test.ged."))
       (is (.contains page "id=\"home-contents\""))
       (is (.contains page "created by Author"))
       (is (.contains page "for Recipient"))
       (is (.contains page "on 13 SEP 2000"))
       (is (.contains page "GEDCOM version 5.5.1 (LINEAGE-LINKED ANSEL)"))
-      (is (.contains page "Submitted by <a href=\"@I31@\">@I31@</a>"))
-      (is (.contains page "<span id=\"version\">x.x.x</span>"))
-      (is (.contains page "23 records in test.ged.")))))
+      (is (.contains page "Submitted by <a href=\"@I31@\" id=\"submitter\">@I31@</a>"))
+      (is (.contains page "<span id=\"version\">x.x.x</span>")))))
 
 (deftest page-not-found-test
   (let [page (apply str (page-not-found {:uri "/unknown" :version "x.x.x"}))]
