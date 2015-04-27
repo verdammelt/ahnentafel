@@ -2,22 +2,23 @@
   (:require [net.cgrand.enlive-html :as html])
   (:require [ahnentafel.gedcom.data :as data]))
 
-(html/defsnippet home-page-snippet "site/templates/home.html" [:div] [header]
+(html/defsnippet home-page-snippet "site/templates/home.html" [:div]
+  [header-data]
   [:#home-contents]
   (html/transform-content
-   (html/replace-vars {:number-of-records (str (:number-of-records header))
-                       :file (:file header)
-                       :source-name (:source header)
-                       :destination-name (:destination header)
-                       :file-time (:file-time header)
-                       :gedcom-version (get-in header [:gedcom :version])
-                       :gedcom-type (get-in header [:gedcom :type])
-                       :encoding (:encoding header)}))
+   (html/replace-vars {:number-of-records (str (:number-of-records header-data))
+                       :file (:file header-data)
+                       :source-name (:source header-data)
+                       :destination-name (:destination header-data)
+                       :file-time (:file-time header-data)
+                       :gedcom-version (get-in header-data [:gedcom :version])
+                       :gedcom-type (get-in header-data [:gedcom :type])
+                       :encoding (:encoding header-data)}))
 
   [:#home-contents :a#submitter]
   (html/do->
-   (html/content (:submitter header))
-   (html/set-attr "href" (:submitter header))))
+   (html/content (get-in header-data [:submitter :name]))
+   (html/set-attr "href" (get-in header-data [:submitter :link]))))
 
 (defmacro def-layout-template [name & forms]
   `(html/deftemplate ~name "site/templates/index.html" [~'data]

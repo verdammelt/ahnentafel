@@ -15,4 +15,4 @@
     (is (= (:file-time header) "13 SEP 2000"))
     (is (= (:gedcom header) {:version "5.5" :type "LINEAGE-LINKED"}))
     (is (= (:encoding header) "ANSEL"))
-    (is (= (:submitter header) "@SUB1@"))))
+    (is (= (:submitter header) {:name "John Doe" :link "/xref/@SUB1@"}))))

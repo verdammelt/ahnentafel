@@ -6,6 +6,9 @@
 (defn- find-item [tree tag]
   (first (find-items tree tag)))
 
+(defn- find-xref [tree xref]
+  (first (filter #(= xref (:xref %)) (:subordinate-lines tree))))
+
 (defn header [tree]
   (let [header (find-item tree "HEAD")]
     {:number-of-records (count (:subordinate-lines tree))
@@ -16,4 +19,8 @@
      :gedcom {:version (:value (find-item (find-item header "GEDC") "VERS"))
               :type (:value (find-item (find-item header "GEDC") "FORM"))}
      :encoding (:value (find-item header "CHAR"))
-     :submitter (:value (find-item header "SUBM"))}))
+     :submitter (let [submitter-xref (:value (find-item header "SUBM"))
+                      submitter (find-xref tree submitter-xref)]
+                  {:name (:value (find-item submitter "NAME"))
+                   :link (str "/xref/" submitter-xref)}
+                  )}))
