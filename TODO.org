@@ -7,8 +7,8 @@
 *** TODO chunk into records
 *** Handle some simple cases (CONC, CONT
 *** Handle XREFS
-** DOING Serve up file header/meta data
-** TODO "Single Page" app showing file meta data
+** DONE Serve up file header/meta data
+** DONE "Single Page" app showing file meta data
 *** Pages should be a template file with standard stuff and then specific stuff inside
 ** TODO roll up CONT/CONC lines
 ** TODO roll up TIME under DATE
