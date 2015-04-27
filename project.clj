@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [compojure "1.3.2"]
+                 [compojure "1.3.3"]
                  [ring/ring-defaults "0.1.4"]
                  [environ "1.0.0"]
                  [enlive "1.1.5"]]
@@ -20,9 +20,9 @@
   {:dev
    {:source-paths ["dev"]
     :resource-paths ["test-resources"]
-    :plugins [[lein-ancient "0.6.5"]
+    :plugins [[lein-ancient "0.6.7"]
               [lein-bikeshed "0.2.0"]
-              [lein-kibit "0.0.8"]]
+              [lein-kibit "0.1.2"]]
     :dependencies [[ring/ring-mock "0.2.0"]
                    [org.clojure/tools.namespace "0.2.10"]
                    [org.clojure/java.classpath "0.2.2"]
