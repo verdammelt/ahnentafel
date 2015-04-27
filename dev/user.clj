@@ -19,4 +19,5 @@
 
 (defn load-and-go []
   (load "reloaded")
+  (require 'ahnentafel.server.pages :reload) ;; to force refresh on templates
   ((ns-resolve *ns* 'go)))
