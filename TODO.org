@@ -10,6 +10,8 @@
 ** DOING Serve up file header/meta data
 ** TODO "Single Page" app showing file meta data
 *** Pages should be a template file with standard stuff and then specific stuff inside
+** TODO roll up CONT/CONC lines
+** TODO roll up TIME under DATE
 * Release #2 (public proof of concept)
 ** Filter out sensitive data
 ** Serve up records by XREF
