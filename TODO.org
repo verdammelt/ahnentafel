@@ -7,8 +7,8 @@
 *** TODO chunk into records
 *** Handle some simple cases (CONC, CONT
 *** Handle XREFS
-** Serve up file header/meta data
-** "Single Page" app showing file meta data
+** DOING Serve up file header/meta data
+** TODO "Single Page" app showing file meta data
 *** Pages should be a template file with standard stuff and then specific stuff inside
 * Release #2 (public proof of concept)
 ** Filter out sensitive data
