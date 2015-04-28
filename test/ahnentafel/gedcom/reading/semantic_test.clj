@@ -2,7 +2,7 @@
   (:require [ahnentafel.gedcom.reading.semantic :refer [process-records]]
             [clojure.test :refer :all]))
 
-(deftest grouping-records
+(deftest grouping-subordinate-records
   (is (= (process-records '({:level 0 :tag "HEAD"}
                             {:level 0 :tag "INDI"}))
          {:level -1 :tag "__ROOT__"
@@ -46,8 +46,9 @@
                                :subordinate-lines [{:level 1 :tag "CHAR"}]}
                               {:level 0
                                :tag "INDI"
-                               :subordinate-lines [{:level 1 :tag "NAME"}]}]}))
+                               :subordinate-lines [{:level 1 :tag "NAME"}]}]})))
 
+(deftest continuation-lines
   (is (= (process-records '({:level 0 :tag "STUFF" :value "Bob"}
                             {:level 1 :tag "CONT" :value "more Bob"}))
          {:level -1 :tag "__ROOT__"
@@ -78,3 +79,10 @@
            (-> processed-records
                (nth 1)
                :value)))))
+
+(deftest postprocess-datetimes
+  (is (= (process-records [{:level 0 :tag "DATE" :value "12 FEB 2000"}
+                           {:level 1 :tag "TIME" :value "12:13:14"}])
+         {:level -1 :tag "__ROOT__"
+          :subordinate-lines
+          [{:level 0 :tag "DATE" :value "12 FEB 2000 12:13:14"}]})))

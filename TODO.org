@@ -10,8 +10,10 @@
 ** DONE Serve up file header/meta data
 ** DONE "Single Page" app showing file meta data
 *** Pages should be a template file with standard stuff and then specific stuff inside
-** TODO roll up CONT/CONC lines
-** TODO roll up TIME under DATE
+** DONE roll up CONT/CONC lines
+CLOSED: [2015-04-28 Tue 08:12]
+** DONE roll up TIME under DATE
+CLOSED: [2015-04-28 Tue 08:45]
 * Release #2 (public proof of concept)
 ** Filter out sensitive data
 ** Serve up records by XREF

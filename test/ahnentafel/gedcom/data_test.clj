@@ -12,7 +12,7 @@
     (is (= (:source header) "Ancestral Quest"))
     (is (= (:destination header) "Ancestral Quest"))
     (is (= (:file header) "sample.ged"))
-    (is (= (:file-time header) "13 SEP 2000"))
+    (is (= (:file-time header) "13 SEP 2000 10:23:03"))
     (is (= (:gedcom header) {:version "5.5" :type "LINEAGE-LINKED"}))
     (is (= (:encoding header) "ANSEL"))
     (is (= (:submitter header) {:name "John Doe" :link "/xref/@SUB1@"}))))

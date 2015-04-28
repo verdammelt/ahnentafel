@@ -48,8 +48,31 @@
                :otherwise
                (recur (zip/next z))))))))
 
+(defn datetimes [tree]
+  (letfn [(loc-tag [loc] (:tag (zip/node loc)))
+          (concat-locs [loc1 loc2]
+            (let [node1 (zip/node loc1)
+                  node2 (zip/node loc2)]
+              (-> loc1
+                  (zip/replace (assoc node1
+                                      :value (str (:value node1)
+                                                  " "
+                                                  (:value node2))))
+                  zip/next
+                  zip/remove)))]
+    (loop [z (gedcom-zipper tree)]
+      (cond (zip/end? z) (zip/root z)
+
+            (and (= (loc-tag z) "DATE")
+                 (= (loc-tag (zip/next z)) "TIME"))
+            (recur (concat-locs z (zip/next z)))
+
+            :otherwise
+            (recur (zip/next z))))))
+
 (defn process-records [records]
   (-> records
       subordinate-records
       continuation-lines
+      datetimes
       ))
