@@ -16,3 +16,9 @@
     (is (= (:gedcom header) {:version "5.5" :type "LINEAGE-LINKED"}))
     (is (= (:encoding header) "ANSEL"))
     (is (= (:submitter header) {:name "John Doe" :xref "@SUB1@"}))))
+
+(deftest record-data
+  (testing "individual"
+    ;; TODO name, sex, birth date/place, death date/place, link to family
+    ;; TODO test case of multiple names
+    ))

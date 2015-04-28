@@ -23,6 +23,33 @@
    (html/set-attr "href"
                   (record-link (get-in header-data [:submitter :xref])))))
 
+(defn- format-names [name & akas]
+  (str name
+       (if akas
+         (str " (a.k.a. " (clojure.string/join ", " akas) ")"))))
+
+(html/defsnippet record-page-snippet "site/templates/record.html" [:div#record-contents]
+  [record]
+  [:#names]
+  (html/content (apply format-names (:name record)))
+
+  [:#sex]
+  (html/content (str "Sex: " (:sex record)))
+
+  [:#birth]
+  (html/content (str "Born: "
+                     (get-in record [:birth :date]) " "
+                     (get-in record [:birth :place])))
+
+  [:#death]
+  (html/content (str "Died: "
+                     (get-in record [:death :date]) " "
+                     (get-in record [:death :place])))
+
+  [:#family]
+  (html/html-content "<a href=\"/records/" (:family record) "\">Go To Family</a>")
+)
+
 (defmacro def-layout-template [name & forms]
   `(html/deftemplate ~name "site/templates/index.html" [~'data]
      ~@forms
@@ -35,4 +62,6 @@
   [:#content] (html/content (str (:uri data) " not found.")))
 
 (def-layout-template record-page
-  [:#content] (html/content "This space left unintentionally blank"))
+  [:#content] (html/substitute (record-page-snippet (data/find-record
+                                                     (select-keys data [:xref])
+                                                     ((:get-data data))))))

@@ -32,3 +32,26 @@
     (is (.contains page "<title>Ahnentafel</title>"))
     (is (.contains page "/unknown not found."))
     (is (.contains page "<span id=\"version\">x.x.x</span>"))))
+
+(deftest record-page-test
+  (testing "individual record"
+    ;; TODO test cases of missing data (especially family)
+
+    (with-local-vars [trapped-query nil]
+      (with-redefs [data/find-record
+                    (fn [query data]
+                      (var-set trapped-query query)
+                      {:name ["Bob Smith" "Robert Smith", "The Guy from The Cure"]
+                       :birth {:date "1 JAN 1970 00:00:00"
+                               :place "near his mother"}
+                       :death {:date "1 JAN 2000 00:00:00"
+                               :place "graveside"}
+                       :sex "M"
+                       :family "@FAM1@"})]
+        (let [page (apply str (record-page {:xref "@I23@" :get-data (fn [] 'fake-data)}))]
+          (is (= @trapped-query {:xref "@I23@"}))
+          (is (.contains page "Bob Smith (a.k.a. Robert Smith, The Guy from The Cure)"))
+          (is (.contains page "Sex: M"))
+          (is (.contains page "Born: 1 JAN 1970 00:00:00 near his mother"))
+          (is (.contains page "Died: 1 JAN 2000 00:00:00 graveside"))
+          (is (.contains page "<a href=\"/records/@FAM1@\">Go To Family</a>")))))))

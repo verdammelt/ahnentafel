@@ -24,4 +24,4 @@
                   {:name (:value (find-item submitter "NAME"))
                    :xref submitter-xref})}))
 
-(defn find-record [query])
+(defn find-record [query tree])
