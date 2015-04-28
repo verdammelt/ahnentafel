@@ -51,14 +51,12 @@
   (is (= (process-records '({:level 0 :tag "STUFF" :value "Bob"}
                             {:level 1 :tag "CONT" :value "more Bob"}))
          {:level -1 :tag "__ROOT__"
-          :subordinate-lines [{:level 0 :tag "STUFF" :value "Bob\nmore Bob"
-                               :subordinate-lines []}]}))
+          :subordinate-lines [{:level 0 :tag "STUFF" :value "Bob\nmore Bob"}]}))
 
   (is (= (process-records '({:level 0 :tag "STUFF" :value "Bob"}
                             {:level 1 :tag "CONC" :value " more Bob"}))
          {:level -1 :tag "__ROOT__"
-          :subordinate-lines [{:level 0 :tag "STUFF" :value "Bob more Bob"
-                               :subordinate-lines []}]}))
+          :subordinate-lines [{:level 0 :tag "STUFF" :value "Bob more Bob"}]}))
 
   (let [processed-records
         (:subordinate-lines

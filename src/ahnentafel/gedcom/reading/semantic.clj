@@ -1,15 +1,6 @@
 (ns ahnentafel.gedcom.reading.semantic
+  (:require [ahnentafel.gedcom.reading.zipper :refer [gedcom-zipper]])
   (:require [clojure.zip :as zip]))
-
-(defn gedcom-zipper [root]
-  (let [branch? (constantly true)
-        children (fn [node]
-                   (if (map? node) (:subordinate-lines node) seq))
-        make-node (fn [node children]
-                    (println (str "(MAKE_NODE " node " " children ")"))
-                    (if (map? node) (assoc node :subordinate-lines (vec children))
-                        (vec children)))]
-    (zip/zipper branch? children make-node root)))
 
 (defn subordinate-records [records]
   (letfn [(rewind-to-level [loc level]
@@ -30,10 +21,11 @@
                       records))))
 
 (defn continuation-lines [tree]
-  (letfn [(continuation? [loc]
-            (contains? #{"CONC" "CONT"} (:tag (zip/node loc))))
+  (letfn [(loc-tag [loc] (:tag (zip/node loc)))
+          (continuation? [loc]
+            (or (= (loc-tag loc) "CONC") (= (loc-tag loc) "CONT")))
           (continuation-connector [loc]
-            (if (= (:tag (zip/node loc)) "CONT") "\n" ""))
+            (if (= (loc-tag loc) "CONT") "\n" ""))
           (add-continuation [loc cont-loc]
             (let [node (zip/node loc)
                   node-value (:value node)
@@ -52,8 +44,6 @@
                (continuation? (zip/next z))
                (let [new-loc (add-continuation z (zip/next z))]
                  (recur (-> new-loc zip/next zip/remove)))
-
-               (not (zip/node (zip/next z))) z
 
                :otherwise
                (recur (zip/next z))))))))
