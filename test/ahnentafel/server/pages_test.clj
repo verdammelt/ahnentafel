@@ -12,7 +12,7 @@
                                          :gedcom {:version "5.5.1"
                                                   :type "LINEAGE-LINKED"}
                                          :encoding "ANSEL"
-                                         :submitter {:link "/xref/@I31@"
+                                         :submitter {:xref "@I31@"
                                                      :name "Fred Smith"}})]
     (let [page (apply str (home-page {:version "x.x.x"
                                       :get-data (fn [] 'fake-data)
@@ -24,7 +24,7 @@
       (is (.contains page "for Recipient"))
       (is (.contains page "on 13 SEP 2000"))
       (is (.contains page "GEDCOM version 5.5.1 (LINEAGE-LINKED ANSEL)"))
-      (is (.contains page "Submitted by <a href=\"/xref/@I31@\" id=\"submitter\">Fred Smith</a>"))
+      (is (.contains page "Submitted by <a href=\"/records/@I31@\" id=\"submitter\">Fred Smith</a>"))
       (is (.contains page "<span id=\"version\">x.x.x</span>")))))
 
 (deftest page-not-found-test

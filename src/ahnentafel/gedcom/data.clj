@@ -22,7 +22,6 @@
      :submitter (let [submitter-xref (:value (find-item header "SUBM"))
                       submitter (find-xref tree submitter-xref)]
                   {:name (:value (find-item submitter "NAME"))
-                   :link (str "/records/" submitter-xref)}
-                  )}))
+                   :xref submitter-xref})}))
 
 (defn find-record [query])

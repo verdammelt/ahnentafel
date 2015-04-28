@@ -2,6 +2,8 @@
   (:require [net.cgrand.enlive-html :as html])
   (:require [ahnentafel.gedcom.data :as data]))
 
+(defn- record-link [xref] (str "/records/" xref))
+
 (html/defsnippet home-page-snippet "site/templates/home.html" [:div]
   [header-data]
   [:#home-contents]
@@ -18,7 +20,8 @@
   [:#home-contents :a#submitter]
   (html/do->
    (html/content (get-in header-data [:submitter :name]))
-   (html/set-attr "href" (get-in header-data [:submitter :link]))))
+   (html/set-attr "href"
+                  (record-link (get-in header-data [:submitter :xref])))))
 
 (defmacro def-layout-template [name & forms]
   `(html/deftemplate ~name "site/templates/index.html" [~'data]
