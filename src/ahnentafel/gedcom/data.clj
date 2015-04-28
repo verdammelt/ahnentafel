@@ -24,4 +24,16 @@
                   {:name (:value (find-item submitter "NAME"))
                    :xref submitter-xref})}))
 
-(defn find-record [query tree])
+(defn find-record [tree query]
+
+  (let [record (find-xref tree (:xref query))]
+    {:type :individual
+     :name (map :value (find-items record "NAME"))
+     :sex (:value (find-item record "SEX"))
+     :birth {:date (:value (find-item (find-item record "BIRT") "DATE"))
+             :place (:value (find-item (find-item record "BIRT") "PLAC"))}
+     :death {:date (:value (find-item (find-item record "DEAT") "DATE"))
+             :place (:value (find-item (find-item record "DEAT") "PLAC"))}
+     :burial {:date (:value (find-item (find-item record "BURI") "DATE"))
+              :place (:value (find-item (find-item record "BURI") "PLAC"))}
+     :family-as-child (:value (find-item record "FAMC"))}))

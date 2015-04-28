@@ -19,6 +19,15 @@
 
 (deftest record-data
   (testing "individual"
-    ;; TODO name, sex, birth date/place, death date/place, link to family
+    (let [record (data/find-record test-tree {:xref "@I52@"})]
+      (is (= (:type record) :individual))
+      (is (= (:name record) '("William Russell /Hartley/")))
+      (is (= (:sex record) "M"))
+      (is (= (:birth record) {:date "27 NOV 1892" :place "Pleasant Green,Salt Lake,Utah"}))
+      (is (= (:death record) {:date "29 JAN 1977" :place "Lethbridge,Alberta,Canada"}))
+      (is (= (:burial record) {:date "2 FEB 1977" :place "Stirling,Alberta,Canada"}))
+      (is (= (:family-as-child record) "@F661@"))
+      )
     ;; TODO test case of multiple names
+    ;; TODO test family-as-parent
     ))

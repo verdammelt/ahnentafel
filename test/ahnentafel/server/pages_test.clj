@@ -39,19 +39,27 @@
 
     (with-local-vars [trapped-query nil]
       (with-redefs [data/find-record
-                    (fn [query data]
+                    (fn [data query]
                       (var-set trapped-query query)
-                      {:name ["Bob Smith" "Robert Smith", "The Guy from The Cure"]
+                      {:type :individual
+                       :name ["Bob Smith" "Robert Smith", "The Guy from The Cure"]
                        :birth {:date "1 JAN 1970 00:00:00"
                                :place "near his mother"}
                        :death {:date "1 JAN 2000 00:00:00"
                                :place "graveside"}
+                       :burial {:date "2 JAN 2000 00:00:00"
+                               :place "6 feet under"}
                        :sex "M"
-                       :family "@FAM1@"})]
+                       :family-as-child "@FAM1@"
+                       :family-as-parent "@FAM2@"
+                       })]
         (let [page (apply str (record-page {:xref "@I23@" :get-data (fn [] 'fake-data)}))]
           (is (= @trapped-query {:xref "@I23@"}))
+          (is (.contains page "INDIVIDUAL"))
           (is (.contains page "Bob Smith (a.k.a. Robert Smith, The Guy from The Cure)"))
           (is (.contains page "Sex: M"))
           (is (.contains page "Born: 1 JAN 1970 00:00:00 near his mother"))
           (is (.contains page "Died: 1 JAN 2000 00:00:00 graveside"))
-          (is (.contains page "<a href=\"/records/@FAM1@\">Go To Family</a>")))))))
+          (is (.contains page "Buried: 2 JAN 2000 00:00:00 6 feet under"))
+          (is (.contains page "<a href=\"/records/@FAM1@\">Go To Family (where this person was a child)</a>"))
+          (is (.contains page "<a href=\"/records/@FAM2@\">Go To Family (where this person was a parent)</a>")))))))

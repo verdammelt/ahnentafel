@@ -30,6 +30,8 @@
 
 (html/defsnippet record-page-snippet "site/templates/record.html" [:div#record-contents]
   [record]
+  [:#type]
+  (html/content (clojure.string/upper-case (name (:type record))))
   [:#names]
   (html/content (apply format-names (:name record)))
 
@@ -46,8 +48,17 @@
                      (get-in record [:death :date]) " "
                      (get-in record [:death :place])))
 
-  [:#family]
-  (html/html-content "<a href=\"/records/" (:family record) "\">Go To Family</a>")
+  [:#burial]
+  (html/content (str "Buried: "
+                     (get-in record [:burial :date]) " "
+                     (get-in record [:burial :place])))
+
+  [:#family-as-child]
+  (html/html-content "<a href=\"/records/" (:family-as-child record) "\">Go To Family (where this person was a child)</a>")
+
+  [:#family-as-parent]
+  (html/html-content "<a href=\"/records/" (:family-as-parent record) "\">Go To Family (where this person was a parent)</a>")
+
 )
 
 (defmacro def-layout-template [name & forms]
@@ -63,5 +74,5 @@
 
 (def-layout-template record-page
   [:#content] (html/substitute (record-page-snippet (data/find-record
-                                                     (select-keys data [:xref])
-                                                     ((:get-data data))))))
+                                                     ((:get-data data))
+                                                     (select-keys data [:xref])))))
