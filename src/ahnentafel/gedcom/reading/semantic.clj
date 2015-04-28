@@ -20,52 +20,48 @@
                       (gedcom-zipper {:level -1 :tag "__ROOT__"})
                       records))))
 
+(defn- combine-locs
+  "Concatenate the value of LOC2 to that of LOC1 separated by SEPARATOR.
+Removes LOC2. Returns updated location."
+  [loc1 loc2 separator]
+  (let [node1 (zip/node loc1)
+        node2 (zip/node loc2)]
+    (-> loc1
+        (zip/replace (assoc node1
+                            :value (str (:value node1)
+                                        separator
+                                        (:value node2))))
+        zip/next
+        zip/remove)))
+
 (defn continuation-lines [tree]
   (letfn [(loc-tag [loc] (:tag (zip/node loc)))
           (continuation? [loc]
             (or (= (loc-tag loc) "CONC") (= (loc-tag loc) "CONT")))
           (continuation-connector [loc]
-            (if (= (loc-tag loc) "CONT") "\n" ""))
-          (add-continuation [loc cont-loc]
-            (let [node (zip/node loc)
-                  node-value (:value node)
-                  cont-value (:value (zip/node cont-loc))
-                  connector (continuation-connector cont-loc)]
-              (zip/replace loc
-                           (assoc node
-                                  :value (str node-value
-                                              connector
-                                              cont-value)))))]
+            (if (= (loc-tag loc) "CONT") "\n" ""))]
     (let [zip (gedcom-zipper tree)]
       (zip/root
        (loop [z zip]
          (cond (zip/end? z) z
 
                (continuation? (zip/next z))
-               (let [new-loc (add-continuation z (zip/next z))]
-                 (recur (-> new-loc zip/next zip/remove)))
+               (recur (combine-locs z (zip/next z)
+                                    (continuation-connector (zip/next z))))
 
                :otherwise
                (recur (zip/next z))))))))
 
+
+
 (defn datetimes [tree]
-  (letfn [(loc-tag [loc] (:tag (zip/node loc)))
-          (concat-locs [loc1 loc2]
-            (let [node1 (zip/node loc1)
-                  node2 (zip/node loc2)]
-              (-> loc1
-                  (zip/replace (assoc node1
-                                      :value (str (:value node1)
-                                                  " "
-                                                  (:value node2))))
-                  zip/next
-                  zip/remove)))]
+  (letfn [(loc-tag [loc] (:tag (zip/node loc)))]
     (loop [z (gedcom-zipper tree)]
       (cond (zip/end? z) (zip/root z)
 
             (and (= (loc-tag z) "DATE")
                  (= (loc-tag (zip/next z)) "TIME"))
-            (recur (concat-locs z (zip/next z)))
+            (recur (combine-locs z (zip/next z) " "))
 
             :otherwise
             (recur (zip/next z))))))
