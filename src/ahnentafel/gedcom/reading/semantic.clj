@@ -27,10 +27,7 @@ Removes LOC2. Returns updated location."
   (let [node1 (zip/node loc1)
         node2 (zip/node loc2)]
     (-> loc1
-        (zip/replace (assoc node1
-                            :value (str (:value node1)
-                                        separator
-                                        (:value node2))))
+        (zip/edit assoc :value (str (:value node1) separator (:value node2)))
         zip/next
         zip/remove)))
 
