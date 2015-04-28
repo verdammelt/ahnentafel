@@ -34,9 +34,7 @@
     (is (.contains page "<span id=\"version\">x.x.x</span>"))))
 
 (deftest record-page-test
-  (testing "individual record"
-    ;; TODO test cases of missing data (especially family)
-
+  (testing "individual record - maximum data"
     (with-local-vars [trapped-query nil]
       (with-redefs [data/find-record
                     (fn [data query]
@@ -62,4 +60,12 @@
           (is (.contains page "Died: 1 JAN 2000 00:00:00 graveside"))
           (is (.contains page "Buried: 2 JAN 2000 00:00:00 6 feet under"))
           (is (.contains page "<a href=\"/records/@FAM1@\">Go To Family (where this person was a child)</a>"))
-          (is (.contains page "<a href=\"/records/@FAM2@\">Go To Family (where this person was a parent)</a>")))))))
+          (is (.contains page "<a href=\"/records/@FAM2@\">Go To Family (where this person was a parent)</a>") page)))))
+
+  (testing "individual record - with parts missing"
+    (with-redefs [data/find-record
+                  (constantly {:type :individual})]
+      (let [page (apply str (record-page {:xref "@I23@" :get-data (constantly 'fake-data)}))]
+        (doseq [x '("Name" "Sex" "Born" "Died" "Buried" "Go To Family")]
+          (is (not (.contains page x))
+              (str "Should not find '" x "' on page.")))))))

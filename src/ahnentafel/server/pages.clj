@@ -3,6 +3,8 @@
   (:require [ahnentafel.gedcom.data :as data]))
 
 (defn- record-link [xref] (str "/records/" xref))
+(defn- full-record-link [xref text]
+  (html/html-snippet "<a href=\"" (record-link xref) "\">" text "</a>"))
 
 (html/defsnippet home-page-snippet "site/templates/home.html" [:div]
   [header-data]
@@ -28,36 +30,46 @@
        (if akas
          (str " (a.k.a. " (clojure.string/join ", " akas) ")"))))
 
+(defn- maybe-content
+  "If (get RECORD KEY) is non-nil then replace content of node with (F (get RECORD KEY))."
+  ([record key] (maybe-content record key identity))
+
+  ([record key f]
+   (if-let [value (get record key)]
+     (html/content (f value))
+     identity)))
+
+(defn- event-info [label event]
+  (clojure.string/join " "
+   (remove nil? [label (:date event) (:place event)])))
+
 (html/defsnippet record-page-snippet "site/templates/record.html" [:div#record-contents]
   [record]
   [:#type]
   (html/content (clojure.string/upper-case (name (:type record))))
+
   [:#names]
-  (html/content (apply format-names (:name record)))
+  (maybe-content record :name #(apply format-names %))
 
   [:#sex]
-  (html/content (str "Sex: " (:sex record)))
+  (maybe-content record :sex #(str "Sex: " %))
 
   [:#birth]
-  (html/content (str "Born: "
-                     (get-in record [:birth :date]) " "
-                     (get-in record [:birth :place])))
+  (maybe-content record :birth #(event-info "Born:" %))
 
   [:#death]
-  (html/content (str "Died: "
-                     (get-in record [:death :date]) " "
-                     (get-in record [:death :place])))
+  (maybe-content record :death #(event-info "Died:" %))
 
   [:#burial]
-  (html/content (str "Buried: "
-                     (get-in record [:burial :date]) " "
-                     (get-in record [:burial :place])))
+  (maybe-content record :burial #(event-info "Buried:" %))
 
   [:#family-as-child]
-  (html/html-content "<a href=\"/records/" (:family-as-child record) "\">Go To Family (where this person was a child)</a>")
+  (maybe-content record :family-as-child
+                 #(full-record-link % "Go To Family (where this person was a child)"))
 
   [:#family-as-parent]
-  (html/html-content "<a href=\"/records/" (:family-as-parent record) "\">Go To Family (where this person was a parent)</a>")
+  (maybe-content record :family-as-parent
+                 #(full-record-link % "Go To Family (where this person was a parent)"))
 
 )
 
