@@ -1,6 +1,7 @@
 #+TODO: TODO DOING | DONE CNCL
 
-* Release #1 (non-public)
+* DONE Release #1 (non-public)d
+CLOSED: [2015-04-28 Tue 09:40]
 ** DONE Parse GEDCOM into stream of records
 *** DONE Read file from disk
 *** DONE parse records into maps
@@ -14,9 +15,9 @@
 CLOSED: [2015-04-28 Tue 08:12]
 ** DONE roll up TIME under DATE
 CLOSED: [2015-04-28 Tue 08:45]
-* Release #2 (public proof of concept)
-** Filter out sensitive data
-** Serve up records by XREF
+* DOING Release #2 (public proof of concept)
+** CNCL Filter out sensitive data
+** TODO Serve up records by XREF
 *** Server needs to serve up the html of the data or the json depending on if JS is enabled.
 ** Landing page with my data on it
 *** link bar at top.
@@ -33,6 +34,9 @@ CLOSED: [2015-04-28 Tue 08:45]
 
 
 * Backlog
+** Refactor subordinate-lines to take a zip
+Then each function could take a zip and return a zipper finally at the
+end of process we zip/root
 ** URL for person search so it can be emailed to someone
 ** Display actual trees back from a person
 ** Display actual trees forward from a person
