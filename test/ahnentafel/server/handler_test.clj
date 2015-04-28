@@ -2,9 +2,10 @@
   (:require [ahnentafel.server.handler :refer [make-handler]]
             [clojure.test :refer :all]
             [ring.mock.request :as mock])
-  (:require [ahnentafel.server.pages :as pages]))
+  (:require [ahnentafel.server.pages :as pages]
+            [ahnentafel.gedcom.data :as data]))
 
-(deftest home-page-handler
+(deftest handlers
   (let [app-data {:version "x.x.x"}
         handler (make-handler app-data)]
    (testing "home page"
@@ -19,4 +20,12 @@
        (is (= (:status response) 404))
        (is (.contains (:body response) "/unknown not found."))
        (is (= (get-in response [:headers  "Content-Type"])
-             "text/html"))))))
+              "text/html"))))
+
+   (testing "record page"
+     (with-redefs [pages/record-page (fn [data] (str "record page: " data))]
+       (let [response (handler (mock/request :get "/records/@I23@"))]
+         (is (= (:status response) 200))
+         (is  (= (:body response)
+                 (str "record page: "
+                      (merge app-data {:xref "@I23@"})))))))))

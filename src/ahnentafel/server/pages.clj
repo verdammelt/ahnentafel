@@ -30,3 +30,6 @@
 
 (def-layout-template page-not-found
   [:#content] (html/content (str (:uri data) " not found.")))
+
+(def-layout-template record-page
+  [:#content] (html/content "This space left unintentionally blank"))
