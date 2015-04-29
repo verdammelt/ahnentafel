@@ -105,3 +105,6 @@
   [:#content] (html/substitute (record-page-snippet (data/find-record
                                                      ((:get-data data))
                                                      (select-keys data [:xref])))))
+
+(def-layout-template about-page
+  [:#content] (html/content (html/html-resource "site/templates/about.html")))

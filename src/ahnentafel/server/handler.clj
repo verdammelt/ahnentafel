@@ -10,6 +10,7 @@
 (defn make-handler [app-data]
   (-> (routes
        (GET "/" [] (pages/home-page app-data))
+       (GET "/about" [] (pages/about-page app-data))
        (GET "/records/:xref" [xref] (pages/record-page (merge app-data {:xref xref})))
        (ANY "*" request (-> (pages/page-not-found (merge request app-data))
                             response/response

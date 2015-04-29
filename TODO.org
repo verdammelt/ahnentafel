@@ -17,7 +17,8 @@ CLOSED: [2015-04-28 Tue 08:12]
 CLOSED: [2015-04-28 Tue 08:45]
 * DOING Release #2 (public proof of concept)
 ** CNCL Filter out sensitive data
-** TODO Serve up records by XREF
+** DONE Serve up records by XREFd
+CLOSED: [2015-04-29 Wed 16:29]
 *** Server needs to serve up the html of the data or the json depending on if JS is enabled.
 ** Landing page with my data on it
 *** link bar at top.
@@ -38,6 +39,7 @@ CLOSED: [2015-04-28 Tue 08:45]
 ** Refactor subordinate-lines to take a zip
 Then each function could take a zip and return a zipper finally at the
 end of process we zip/root
+** Make more 'responsive' with use of JS to get JSON data.
 ** URL for person search so it can be emailed to someone
 ** Display actual trees back from a person
 ** Display actual trees forward from a person
