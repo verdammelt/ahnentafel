@@ -34,6 +34,7 @@ CLOSED: [2015-04-28 Tue 08:45]
 
 
 * Backlog
+** Lots of duplication in test/production code due to structure.
 ** Refactor subordinate-lines to take a zip
 Then each function could take a zip and return a zipper finally at the
 end of process we zip/root
