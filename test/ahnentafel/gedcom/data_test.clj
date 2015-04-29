@@ -28,8 +28,11 @@
       (is (= (:burial record) {:date "2 FEB 1977" :place "Stirling,Alberta,Canada"}))
       (is (= (:family-as-child record) "@F661@"))
       )
+
+    (let [record (data/find-record test-tree {:xref "@I2694@"})]
+      (is (= (:family-as-spouse record) "@F661@")))
+
     ;; TODO test case of multiple names
-    ;; TODO test family-as-spouse
     )
   (testing "submitter"
     (let [record (data/find-record test-tree {:xref "@SUB1@"})]

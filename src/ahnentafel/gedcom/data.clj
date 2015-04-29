@@ -39,7 +39,8 @@
     (-> {:type (type-of record)
          :name (map :value (find-items record "NAME"))
          :sex (:value (find-item record "SEX"))
-         :family-as-child (:value (find-item record "FAMC"))}
+         :family-as-child (:value (find-item record "FAMC"))
+         :family-as-spouse (:value (find-item record "FAMS"))}
         (add-event-info :birth (find-item record "BIRT"))
         (add-event-info :death (find-item record "DEAT"))
         (add-event-info :burial (find-item record "BURI")))))
