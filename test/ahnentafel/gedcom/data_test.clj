@@ -1,7 +1,9 @@
 (ns ahnentafel.gedcom.data-test
   (:require [ahnentafel.gedcom.data :as data]
             [ahnentafel.gedcom.reading.reader :refer [read-file]]
+            [ahnentafel.gedcom.reading.zipper :refer [gedcom-zipper]]
             [clojure.java.io :refer [resource]]
+            [clojure.zip :as zip]
             [clojure.test :refer :all]))
 
 (def test-tree (read-file (resource "sample.ged")))
@@ -15,7 +17,16 @@
     (is (= (:file-time header) "13 SEP 2000 10:23:03"))
     (is (= (:gedcom header) {:version "5.5" :type "LINEAGE-LINKED"}))
     (is (= (:encoding header) "ANSEL"))
-    (is (= (:submitter header) {:name "John Doe" :xref "@SUB1@"}))))
+    (is (= (:submitter header) {:name "John Doe" :xref "@SUB1@"})))
+
+  (testing "without submitter"
+    (let [new-tree (-> (gedcom-zipper test-tree)
+                       zip/down zip/down
+                       zip/right zip/right zip/right zip/right zip/right zip/right
+                       (zip/edit assoc :value nil)
+                       zip/root)]
+      (let [header (data/header new-tree)]
+        (is (= (:submitter header) nil))))))
 
 (deftest record-data
   (testing "if record not found"

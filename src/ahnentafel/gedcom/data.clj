@@ -10,19 +10,20 @@
   (first (filter #(= xref (:xref %)) (:subordinate-lines tree))))
 
 (defn header [tree]
-  (let [header (find-item tree "HEAD")]
-    {:number-of-records (count (:subordinate-lines tree))
-     :source (:value (find-item (find-item header "SOUR") "NAME"))
-     :destination (:value (find-item header "DEST"))
-     :file (:value (find-item header "FILE"))
-     :file-time (:value (find-item header "DATE"))
-     :gedcom {:version (:value (find-item (find-item header "GEDC") "VERS"))
-              :type (:value (find-item (find-item header "GEDC") "FORM"))}
-     :encoding (:value (find-item header "CHAR"))
-     :submitter (let [submitter-xref (:value (find-item header "SUBM"))
-                      submitter (find-xref tree submitter-xref)]
-                  {:name (:value (find-item submitter "NAME"))
-                   :xref submitter-xref})}))
+  (let [header (find-item tree "HEAD")
+        add-submitter (fn [m]
+                        (if-let [xref (:value (find-item header "SUBM"))]
+                          (assoc m :submitter {:name (:value (find-item (find-xref tree xref) "NAME"))
+                                               :xref xref})))]
+    (-> {:number-of-records (count (:subordinate-lines tree))
+         :source (:value (find-item (find-item header "SOUR") "NAME"))
+         :destination (:value (find-item header "DEST"))
+         :file (:value (find-item header "FILE"))
+         :file-time (:value (find-item header "DATE"))
+         :gedcom {:version (:value (find-item (find-item header "GEDC") "VERS"))
+                  :type (:value (find-item (find-item header "GEDC") "FORM"))}
+         :encoding (:value (find-item header "CHAR"))}
+        (add-submitter))))
 
 (defn find-record [tree query]
   (let [record (find-xref tree (:xref query))
