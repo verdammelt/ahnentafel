@@ -30,4 +30,14 @@
       )
     ;; TODO test case of multiple names
     ;; TODO test family-as-parent
-    ))
+    )
+  (testing "submitter"
+    (let [record (data/find-record test-tree {:xref "@SUB1@"})]
+      (is (= (:type record) :submitter))
+      (is (= (:name record) ["John Doe"]))
+      (doseq [x [:sex :family-as-child :family-as-parent]]
+        (is (= nil (get record x))
+            (str "Value of key " x " should be nil")))
+      (doseq [x [:birth :death :burial]]
+        (is (not (contains? record x))
+            (str "Record should not contain key " x))))))

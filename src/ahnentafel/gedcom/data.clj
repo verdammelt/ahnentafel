@@ -25,15 +25,21 @@
                    :xref submitter-xref})}))
 
 (defn find-record [tree query]
-
-  (let [record (find-xref tree (:xref query))]
-    {:type :individual
-     :name (map :value (find-items record "NAME"))
-     :sex (:value (find-item record "SEX"))
-     :birth {:date (:value (find-item (find-item record "BIRT") "DATE"))
-             :place (:value (find-item (find-item record "BIRT") "PLAC"))}
-     :death {:date (:value (find-item (find-item record "DEAT") "DATE"))
-             :place (:value (find-item (find-item record "DEAT") "PLAC"))}
-     :burial {:date (:value (find-item (find-item record "BURI") "DATE"))
-              :place (:value (find-item (find-item record "BURI") "PLAC"))}
-     :family-as-child (:value (find-item record "FAMC"))}))
+  (let [record (find-xref tree (:xref query))
+        add-event-info (fn [m k e]
+                         (if e
+                           (assoc m k
+                                  {:date (:value (find-item e "DATE"))
+                                   :place (:value (find-item e "PLAC"))})
+                           m))
+        type-of (fn [r] (get {"INDI" :individual
+                             "SUBM" :submitter}
+                            (:tag r)
+                            :unknown))]
+    (-> {:type (type-of record)
+         :name (map :value (find-items record "NAME"))
+         :sex (:value (find-item record "SEX"))
+         :family-as-child (:value (find-item record "FAMC"))}
+        (add-event-info :birth (find-item record "BIRT"))
+        (add-event-info :death (find-item record "DEAT"))
+        (add-event-info :burial (find-item record "BURI")))))
