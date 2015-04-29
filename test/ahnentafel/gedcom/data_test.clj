@@ -29,13 +29,13 @@
       (is (= (:family-as-child record) "@F661@"))
       )
     ;; TODO test case of multiple names
-    ;; TODO test family-as-parent
+    ;; TODO test family-as-spouse
     )
   (testing "submitter"
     (let [record (data/find-record test-tree {:xref "@SUB1@"})]
       (is (= (:type record) :submitter))
       (is (= (:name record) ["John Doe"]))
-      (doseq [x [:sex :family-as-child :family-as-parent]]
+      (doseq [x [:sex :family-as-child :family-as-spouse]]
         (is (= nil (get record x))
             (str "Value of key " x " should be nil")))
       (doseq [x [:birth :death :burial]]

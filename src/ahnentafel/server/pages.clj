@@ -67,9 +67,9 @@
   (maybe-content record :family-as-child
                  #(full-record-link % "Go To Family (where this person was a child)"))
 
-  [:#family-as-parent]
-  (maybe-content record :family-as-parent
-                 #(full-record-link % "Go To Family (where this person was a parent)"))
+  [:#family-as-spouse]
+  (maybe-content record :family-as-spouse
+                 #(full-record-link % "Go To Family (where this person was a spouse)"))
 
 )
 

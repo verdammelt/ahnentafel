@@ -49,7 +49,7 @@
                                :place "6 feet under"}
                        :sex "M"
                        :family-as-child "@FAM1@"
-                       :family-as-parent "@FAM2@"
+                       :family-as-spouse "@FAM2@"
                        })]
         (let [page (apply str (record-page {:xref "@I23@" :get-data (fn [] 'fake-data)}))]
           (is (= @trapped-query {:xref "@I23@"}))
@@ -60,7 +60,7 @@
           (is (.contains page "Died: 1 JAN 2000 00:00:00 graveside"))
           (is (.contains page "Buried: 2 JAN 2000 00:00:00 6 feet under"))
           (is (.contains page "<a href=\"/records/@FAM1@\">Go To Family (where this person was a child)</a>"))
-          (is (.contains page "<a href=\"/records/@FAM2@\">Go To Family (where this person was a parent)</a>") page)))))
+          (is (.contains page "<a href=\"/records/@FAM2@\">Go To Family (where this person was a spouse)</a>") page)))))
 
   (testing "individual record - with parts missing"
     (with-redefs [data/find-record
