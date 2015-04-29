@@ -9,21 +9,25 @@
 (html/defsnippet home-page-snippet "site/templates/home.html" [:div]
   [header-data]
   [:#home-contents]
-  (html/transform-content
-   (html/replace-vars {:number-of-records (str (:number-of-records header-data))
+  (letfn [(ensure-strings [m]
+            (zipmap (keys m) (map str (vals m))))]
+    (html/transform-content
+     (html/replace-vars
+      (ensure-strings {:number-of-records (:number-of-records header-data)
                        :file (:file header-data)
                        :source-name (:source header-data)
                        :destination-name (:destination header-data)
                        :file-time (:file-time header-data)
                        :gedcom-version (get-in header-data [:gedcom :version])
                        :gedcom-type (get-in header-data [:gedcom :type])
-                       :encoding (:encoding header-data)}))
+                       :encoding (:encoding header-data)}))))
 
   [:#home-contents :a#submitter]
   (html/do->
    (html/content (get-in header-data [:submitter :name]))
    (html/set-attr "href"
-                  (record-link (get-in header-data [:submitter :xref])))))
+                  (record-link (get-in header-data [:submitter :xref]))))
+  )
 
 (defn- format-names [name & akas]
   (str name
