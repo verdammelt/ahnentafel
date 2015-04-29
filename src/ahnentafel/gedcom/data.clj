@@ -15,15 +15,19 @@
                         (if-let [xref (:value (find-item header "SUBM"))]
                           (assoc m :submitter {:name (:value (find-item (find-xref tree xref) "NAME"))
                                                :xref xref})
-                          m))]
+                          m))
+        add-source (fn [m]
+                     (let [source (find-item header "SOUR")]
+                       (assoc m :source (:value (or (find-item source "NAME")
+                                                    source)))))]
     (-> {:number-of-records (count (:subordinate-lines tree))
-         :source (:value (find-item (find-item header "SOUR") "NAME"))
          :destination (:value (find-item header "DEST"))
          :file (:value (find-item header "FILE"))
          :file-time (:value (find-item header "DATE"))
          :gedcom {:version (:value (find-item (find-item header "GEDC") "VERS"))
                   :type (:value (find-item (find-item header "GEDC") "FORM"))}
          :encoding (:value (find-item header "CHAR"))}
+        (add-source)
         (add-submitter))))
 
 (defn find-record [tree query]

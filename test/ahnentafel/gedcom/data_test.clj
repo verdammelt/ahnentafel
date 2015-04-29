@@ -27,7 +27,15 @@
                        zip/root)]
       (let [header (data/header new-tree)]
         (is (not (nil? header)))
-        (is (= (:submitter header) nil))))))
+        (is (= (:submitter header) nil)))))
+
+  (testing "direct source name"
+    (let [new-tree (-> (gedcom-zipper test-tree)
+                       zip/down zip/down
+                       (zip/edit dissoc :subordinate-lines)
+                       zip/root)]
+      (let [header (data/header new-tree)]
+        (is (= (:source header) "AncestQuest"))))))
 
 (deftest record-data
   (testing "if record not found"
@@ -43,8 +51,7 @@
       (is (= (:birth record) {:date "27 NOV 1892" :place "Pleasant Green,Salt Lake,Utah"}))
       (is (= (:death record) {:date "29 JAN 1977" :place "Lethbridge,Alberta,Canada"}))
       (is (= (:burial record) {:date "2 FEB 1977" :place "Stirling,Alberta,Canada"}))
-      (is (= (:family-as-child record) "@F661@"))
-      )
+      (is (= (:family-as-child record) "@F661@")))
 
     (let [record (data/find-record test-tree {:xref "@I2694@"})]
       (is (= (:family-as-spouse record) "@F661@"))))
