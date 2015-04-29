@@ -6,7 +6,13 @@
 (defn- full-record-link [xref text]
   (html/html-snippet "<a href=\"" (record-link xref) "\">" text "</a>"))
 
-(html/defsnippet home-page-snippet "site/templates/home.html" [:div]
+(defn- maybe-substitute
+  [m k f]
+  (if-let [value (get m k)]
+    (html/substitute (f value))
+    identity))
+
+(html/defsnippet home-page-snippet "site/templates/home.html" [:div#home-contents]
   [header-data]
   [:#home-contents]
   (letfn [(ensure-strings [m]
@@ -14,20 +20,25 @@
     (html/transform-content
      (html/replace-vars
       (ensure-strings {:number-of-records (:number-of-records header-data)
-                       :file (:file header-data)
+                       :file (or (:file header-data)
+                                 (:filename header-data))
                        :source-name (:source header-data)
-                       :destination-name (:destination header-data)
-                       :file-time (:file-time header-data)
                        :gedcom-version (get-in header-data [:gedcom :version])
                        :gedcom-type (get-in header-data [:gedcom :type])
                        :encoding (:encoding header-data)}))))
 
-  [:#home-contents :a#submitter]
-  (html/do->
-   (html/content (get-in header-data [:submitter :name]))
-   (html/set-attr "href"
-                  (record-link (get-in header-data [:submitter :xref]))))
-  )
+  [:#destination]
+  (maybe-substitute header-data :destination #(str "for " %))
+
+  [:#file-time]
+  (maybe-substitute header-data :file-time #(str "on " %))
+
+  [:#submitter]
+  (html/substitute
+   (if-let [submitter (:submitter header-data)]
+     (conj (full-record-link (:xref submitter) (:name submitter))
+           (html/html-snippet "Submitted by "))
+     "")))
 
 (defn- format-names [name & akas]
   (str name
@@ -83,7 +94,9 @@
      [:#version] (html/content (:version ~'data))))
 
 (def-layout-template home-page
-  [:#content] (html/substitute (home-page-snippet (data/header ((:get-data data))))))
+  [:#content] (html/substitute (home-page-snippet
+                                (assoc (data/header ((:get-data data)))
+                                       :filename (:file data)) )))
 
 (def-layout-template page-not-found
   [:#content] (html/content (str (:uri data) " not found.")))
