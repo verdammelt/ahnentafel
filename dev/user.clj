@@ -9,6 +9,7 @@
             [environ.core :refer (env)]))
 
 (alter-var-root #'*out* (constantly *out*))
+(alter-var-root #'*err* (constantly *err*))
 
 (defn all-tests
   "Utility function for running all tests in the project namespace."
