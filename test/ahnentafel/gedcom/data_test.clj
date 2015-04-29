@@ -18,6 +18,11 @@
     (is (= (:submitter header) {:name "John Doe" :xref "@SUB1@"}))))
 
 (deftest record-data
+  (testing "if record not found"
+    (let [record (data/find-record test-tree {:xref "xref not to be found"})]
+      (is (= (:type record) :unknown))
+      (is (= (:name record) '()))))
+
   (testing "individual"
     (let [record (data/find-record test-tree {:xref "@I52@"})]
       (is (= (:type record) :individual))
@@ -30,10 +35,8 @@
       )
 
     (let [record (data/find-record test-tree {:xref "@I2694@"})]
-      (is (= (:family-as-spouse record) "@F661@")))
+      (is (= (:family-as-spouse record) "@F661@"))))
 
-    ;; TODO test case of multiple names
-    )
   (testing "submitter"
     (let [record (data/find-record test-tree {:xref "@SUB1@"})]
       (is (= (:type record) :submitter))
