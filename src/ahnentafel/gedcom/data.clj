@@ -14,7 +14,8 @@
         add-submitter (fn [m]
                         (if-let [xref (:value (find-item header "SUBM"))]
                           (assoc m :submitter {:name (:value (find-item (find-xref tree xref) "NAME"))
-                                               :xref xref})))]
+                                               :xref xref})
+                          m))]
     (-> {:number-of-records (count (:subordinate-lines tree))
          :source (:value (find-item (find-item header "SOUR") "NAME"))
          :destination (:value (find-item header "DEST"))

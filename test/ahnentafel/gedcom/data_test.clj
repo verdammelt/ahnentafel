@@ -26,6 +26,7 @@
                        (zip/edit assoc :value nil)
                        zip/root)]
       (let [header (data/header new-tree)]
+        (is (not (nil? header)))
         (is (= (:submitter header) nil))))))
 
 (deftest record-data
