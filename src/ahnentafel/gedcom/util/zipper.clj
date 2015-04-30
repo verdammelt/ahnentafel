@@ -1,4 +1,4 @@
-(ns ahnentafel.gedcom.reading.zipper
+(ns ahnentafel.gedcom.util.zipper
   (:require [clojure.zip :as zip]))
 
 (defn gedcom-zipper [root]

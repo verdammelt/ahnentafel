@@ -1,5 +1,5 @@
 (ns ahnentafel.gedcom.reading.semantic
-  (:require [ahnentafel.gedcom.reading.zipper :refer [gedcom-zipper]])
+  (:require [ahnentafel.gedcom.util.zipper :refer [gedcom-zipper]])
   (:require [clojure.zip :as zip]))
 
 (defn subordinate-records [records]

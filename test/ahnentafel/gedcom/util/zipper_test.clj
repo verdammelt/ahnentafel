@@ -1,5 +1,5 @@
-(ns ahnentafel.gedcom.reading.zipper-test
-  (:require [ahnentafel.gedcom.reading.zipper :refer [gedcom-zipper]])
+(ns ahnentafel.gedcom.util.zipper-test
+  (:require [ahnentafel.gedcom.util.zipper :refer [gedcom-zipper]])
   (:require [clojure.zip :as zip])
   (:require [clojure.test :refer :all]))
 
