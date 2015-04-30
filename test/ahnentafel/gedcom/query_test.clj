@@ -1,5 +1,5 @@
-(ns ahnentafel.gedcom.data-test
-  (:require [ahnentafel.gedcom.data :as data]
+(ns ahnentafel.gedcom.query-test
+  (:require [ahnentafel.gedcom.query :as query]
             [ahnentafel.gedcom.reading.reader :refer [read-file]]
             [ahnentafel.gedcom.reading.zipper :refer [gedcom-zipper]]
             [clojure.java.io :refer [resource]]
@@ -9,7 +9,7 @@
 (def test-tree (read-file (resource "sample.ged")))
 
 (deftest header-data
-  (let [header (data/header test-tree)]
+  (let [header (query/header test-tree)]
     (is (= (:number-of-records header) 45))
     (is (= (:source header) "Ancestral Quest"))
     (is (= (:destination header) "Ancestral Quest"))
@@ -25,7 +25,7 @@
                        zip/right zip/right zip/right zip/right zip/right zip/right
                        (zip/edit assoc :value nil)
                        zip/root)]
-      (let [header (data/header new-tree)]
+      (let [header (query/header new-tree)]
         (is (not (nil? header)))
         (is (= (:submitter header) nil)))))
 
@@ -34,17 +34,17 @@
                        zip/down zip/down
                        (zip/edit dissoc :subordinate-lines)
                        zip/root)]
-      (let [header (data/header new-tree)]
+      (let [header (query/header new-tree)]
         (is (= (:source header) "AncestQuest"))))))
 
 (deftest record-data
   (testing "if record not found"
-    (let [record (data/find-record test-tree {:xref "xref not to be found"})]
+    (let [record (query/find-record test-tree {:xref "xref not to be found"})]
       (is (= (:type record) :unknown))
       (is (= (:name record) '()))))
 
   (testing "individual"
-    (let [record (data/find-record test-tree {:xref "@I52@"})]
+    (let [record (query/find-record test-tree {:xref "@I52@"})]
       (is (= (:type record) :individual))
       (is (= (:name record) '("William Russell /Hartley/")))
       (is (= (:sex record) "M"))
@@ -53,11 +53,11 @@
       (is (= (:burial record) {:date "2 FEB 1977" :place "Stirling,Alberta,Canada"}))
       (is (= (:family-as-child record) "@F661@")))
 
-    (let [record (data/find-record test-tree {:xref "@I2694@"})]
+    (let [record (query/find-record test-tree {:xref "@I2694@"})]
       (is (= (:family-as-spouse record) "@F661@"))))
 
   (testing "submitter"
-    (let [record (data/find-record test-tree {:xref "@SUB1@"})]
+    (let [record (query/find-record test-tree {:xref "@SUB1@"})]
       (is (= (:type record) :submitter))
       (is (= (:name record) ["John Doe"]))
       (doseq [x [:sex :family-as-child :family-as-spouse]]

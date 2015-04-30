@@ -1,6 +1,6 @@
 (ns ahnentafel.server.pages-test
   (:require [ahnentafel.server.pages :refer :all])
-  (:require [ahnentafel.gedcom.data :as data])
+  (:require [ahnentafel.gedcom.query :as query])
   (:require [clojure.test :refer :all]))
 
 (defn get-page [page & args]
@@ -28,7 +28,7 @@
   `(are [text] (~'page-contains? text) ~@texts))
 
 (deftest home-page-test
-  (with-redefs [data/header (constantly {:number-of-records 23
+  (with-redefs [query/header (constantly {:number-of-records 23
                                          :source "Author"
                                          :destination "Recipient"
                                          :file "test.ged"
@@ -60,7 +60,7 @@
 (deftest record-page-test
   (testing "individual record - maximum data"
     (with-local-vars [trapped-query nil]
-      (with-redefs [data/find-record
+      (with-redefs [query/find-record
                     (fn [data query]
                       (var-set trapped-query query)
                       {:type :individual
@@ -88,7 +88,7 @@
            "<a href=\"/records/@FAM2@\">Go To Family (where this person was a spouse)</a>")))))
 
   (testing "individual record - with parts missing"
-    (with-redefs [data/find-record
+    (with-redefs [query/find-record
                   (constantly {:type :individual})]
       (let [page (get-page record "@I23@")]
         (are [text] (page-not-contains? text)

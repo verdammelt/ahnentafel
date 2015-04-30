@@ -3,7 +3,7 @@
             [clojure.test :refer :all]
             [ring.mock.request :as mock])
   (:require [ahnentafel.server.pages :as pages]
-            [ahnentafel.gedcom.data :as data]))
+            [ahnentafel.gedcom.query :as query]))
 
 (deftest handlers
   (let [app-data {:version "x.x.x"}

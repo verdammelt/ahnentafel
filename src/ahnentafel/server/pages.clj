@@ -1,6 +1,6 @@
 (ns ahnentafel.server.pages
   (:require [net.cgrand.enlive-html :as html])
-  (:require [ahnentafel.gedcom.data :as data]))
+  (:require [ahnentafel.gedcom.query :as query]))
 
 (defn- full-record-link [xref text]
   (html/html-snippet "<a href=\"/records/" xref "\">" text "</a>"))
@@ -93,7 +93,7 @@
 
 (def-layout-template home
   [:#content] (html/substitute (home-page-snippet
-                                (assoc (data/header ((:get-data data)))
+                                (assoc (query/header ((:get-data data)))
                                        :filename (:gedcom-file data)) )))
 
 (def-layout-template not-found
@@ -103,7 +103,7 @@
 (def-layout-template record
   [:#content]
   (let [xref (first args)]
-    (html/substitute (record-page-snippet (data/find-record
+    (html/substitute (record-page-snippet (query/find-record
                                            ((:get-data data))
                                            {:xref xref})))))
 
