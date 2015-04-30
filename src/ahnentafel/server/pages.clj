@@ -2,15 +2,32 @@
   (:require [net.cgrand.enlive-html :as html])
   (:require [ahnentafel.gedcom.data :as data]))
 
-(defn- record-link [xref] (str "/records/" xref))
 (defn- full-record-link [xref text]
-  (html/html-snippet "<a href=\"" (record-link xref) "\">" text "</a>"))
+  (html/html-snippet "<a href=\"/records/" xref "\">" text "</a>"))
+
+(defn- format-names [name & akas]
+  (str name
+       (if akas
+         (str " (a.k.a. " (clojure.string/join ", " akas) ")"))))
+
+(defn- maybe-content
+  "If (get RECORD KEY) is non-nil then replace content of node with (F (get RECORD KEY))."
+  ([record key] (maybe-content record key identity))
+
+  ([record key f]
+   (if-let [value (get record key)]
+     (html/content (f value))
+     identity)))
 
 (defn- maybe-substitute
   [m k f]
   (if-let [value (get m k)]
     (html/substitute (f value))
     identity))
+
+(defn- event-info [label event]
+  (clojure.string/join " "
+                       (remove nil? [label (:date event) (:place event)])))
 
 (html/defsnippet home-page-snippet "site/templates/home.html" [:div#home-contents]
   [header-data]
@@ -40,26 +57,9 @@
            (html/html-snippet "Submitted by "))
      "")))
 
-(defn- format-names [name & akas]
-  (str name
-       (if akas
-         (str " (a.k.a. " (clojure.string/join ", " akas) ")"))))
-
-(defn- maybe-content
-  "If (get RECORD KEY) is non-nil then replace content of node with (F (get RECORD KEY))."
-  ([record key] (maybe-content record key identity))
-
-  ([record key f]
-   (if-let [value (get record key)]
-     (html/content (f value))
-     identity)))
-
-(defn- event-info [label event]
-  (clojure.string/join " "
-   (remove nil? [label (:date event) (:place event)])))
-
 (html/defsnippet record-page-snippet "site/templates/record.html" [:div#record-contents]
   [record]
+
   [:#type]
   (html/content (clojure.string/upper-case (name (:type record))))
 
@@ -84,9 +84,7 @@
 
   [:#family-as-spouse]
   (maybe-content record :family-as-spouse
-                 #(full-record-link % "Go To Family (where this person was a spouse)"))
-
-)
+                 #(full-record-link % "Go To Family (where this person was a spouse)")))
 
 (defmacro def-layout-template [name & forms]
   `(html/deftemplate ~name "site/templates/index.html" [~'data & ~'args]
