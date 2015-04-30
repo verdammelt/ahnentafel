@@ -7,15 +7,19 @@
   (:require [ring.middleware.defaults :refer [wrap-defaults site-defaults]])
   (:require [ring.middleware.stacktrace :refer [wrap-stacktrace]]))
 
-(defn make-handler [app-data]
-  (-> (routes
+(defn make-routes [app-data]
+  (routes
        (GET "/" [] (pages/home-page app-data))
        (GET "/about" [] (pages/about-page app-data))
        (GET "/records/:xref" [xref] (pages/record-page (merge app-data {:xref xref})))
        (ANY "*" request (-> (pages/page-not-found (merge request app-data))
                             response/response
                             (response/status 404)
-                            (response/header "Content-Type" "text/html"))))
+                            (response/header "Content-Type" "text/html")))))
+
+(defn make-handler [app-data]
+  (-> app-data
+      make-routes
       (wrap-defaults (assoc-in site-defaults [:static :resources] "site"))
       wrap-stacktrace
       simple-logging))
