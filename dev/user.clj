@@ -5,6 +5,7 @@
             [clojure.repl :refer :all]
             [clojure.test :as test]
             [clojure.tools.namespace.repl :refer (refresh refresh-all)]
+            [clojure.tools.namespace.find :refer (find-namespaces-in-dir)]
             [ring.adapter.jetty :refer (run-jetty)]
             [environ.core :refer (env)]))
 
@@ -18,7 +19,12 @@
    (clojure.test/run-all-tests
     (re-pattern (str "ahnentafel" sub-ns ".*")))))
 
+(defn- reload-pages []
+  (map #(require (symbol %) :reload)
+       (find-namespaces-in-dir
+        (clojure.java.io/as-file "src/ahnentafel/server/pages"))))
+
 (defn load-and-go []
   (load "reloaded")
-  (require 'ahnentafel.server.pages :reload) ;; to force refresh on templates
+  (reload-pages)
   ((ns-resolve *ns* 'go)))

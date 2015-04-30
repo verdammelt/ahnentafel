@@ -1,5 +1,8 @@
 (ns ahnentafel.server.pages-test
-  (:require [ahnentafel.server.pages :refer :all])
+  (:require [ahnentafel.server.pages.home :refer :all])
+  (:require [ahnentafel.server.pages.record :refer :all])
+  (:require [ahnentafel.server.pages.not-found :refer :all])
+
   (:require [ahnentafel.gedcom.query :as query])
   (:require [clojure.test :refer :all]))
 

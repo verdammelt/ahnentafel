@@ -2,7 +2,8 @@
   (:require [ahnentafel.server.handler :refer [make-handler]]
             [clojure.test :refer :all]
             [ring.mock.request :as mock])
-  (:require [ahnentafel.server.pages :as pages]
+  (:require [ahnentafel.server.pages.home :refer [home]]
+            [ahnentafel.server.pages.record :refer [record]]
             [ahnentafel.gedcom.query :as query]))
 
 (deftest handlers
@@ -11,7 +12,7 @@
         get-page (fn [url] (handler (mock/request :get url)))]
 
    (testing "home page"
-     (with-redefs [pages/home (fn [data] (str "homepage: " data))]
+     (with-redefs [home (fn [data] (str "homepage: " data))]
        (let [response (get-page "/")]
          (is (= (:status response) 200))
          (is (= (:body response)
@@ -24,7 +25,7 @@
        (is (= (get-in response [:headers  "Content-Type"]) "text/html"))))
 
    (testing "record page"
-     (with-redefs [pages/record (fn [data & xref]
+     (with-redefs [record (fn [data & xref]
                                   (str "record page: " data " " xref))]
        (let [response (get-page "/records/@I23@")]
          (is (= (:status response) 200))
