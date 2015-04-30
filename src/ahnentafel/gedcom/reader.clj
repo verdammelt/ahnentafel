@@ -1,4 +1,4 @@
-(ns ahnentafel.gedcom.reading.reader
+(ns ahnentafel.gedcom.reader
   (:require [ahnentafel.gedcom.reading.lexer :refer [read-file-lines]])
   (:require [ahnentafel.gedcom.reading.parser :refer [parse-lines]])
   (:require [ahnentafel.gedcom.reading.semantic :refer [process-records]]))

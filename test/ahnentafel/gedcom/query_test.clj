@@ -1,6 +1,6 @@
 (ns ahnentafel.gedcom.query-test
   (:require [ahnentafel.gedcom.query :as query]
-            [ahnentafel.gedcom.reading.reader :refer [read-file]]
+            [ahnentafel.gedcom.reader :refer [read-file]]
             [ahnentafel.gedcom.reading.zipper :refer [gedcom-zipper]]
             [clojure.java.io :refer [resource]]
             [clojure.zip :as zip]
