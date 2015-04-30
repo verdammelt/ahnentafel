@@ -6,11 +6,11 @@
   (:require [clojure.java.io :refer [resource]]))
 
 (defn system []
-  (let [file (resource (:file env "sample.ged"))
+  (let [file (resource (:gedcom-file env "sample.ged"))
         data (future (read-file file))
         app-data {:version (:ahnentafel-version env)
                   :port (:port env)
-                  :file file
+                  :gedcom-file file
                   :get-data (fn [] @data)}
         handler (make-handler app-data)]
     (merge {:handler handler} app-data)))

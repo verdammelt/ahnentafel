@@ -96,7 +96,7 @@
 (def-layout-template home-page
   [:#content] (html/substitute (home-page-snippet
                                 (assoc (data/header ((:get-data data)))
-                                       :filename (:file data)) )))
+                                       :filename (:gedcom-file data)) )))
 
 (def-layout-template page-not-found
   [:#content] (html/content (str (:uri data) " not found.")))
