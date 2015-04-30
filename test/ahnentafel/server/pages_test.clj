@@ -28,7 +28,7 @@
       (is (.contains page "<span id=\"version\">x.x.x</span>")))))
 
 (deftest page-not-found-test
-  (let [page (apply str (not-found {:uri "/unknown" :version "x.x.x"}))]
+  (let [page (apply str (not-found {:version "x.x.x"} {:uri "/unknown"}))]
     (is (.contains page "<title>Ahnentafel</title>"))
     (is (.contains page "/unknown not found."))
     (is (.contains page "<span id=\"version\">x.x.x</span>"))))
@@ -51,7 +51,7 @@
                        :family-as-child "@FAM1@"
                        :family-as-spouse "@FAM2@"
                        })]
-        (let [page (apply str (record {:xref "@I23@" :get-data (fn [] 'fake-data)}))]
+        (let [page (apply str (record {:get-data (fn [] 'fake-data)} "@I23@"))]
           (is (= @trapped-query {:xref "@I23@"}))
           (is (.contains page "INDIVIDUAL"))
           (is (.contains page "Bob Smith (a.k.a. Robert Smith, The Guy from The Cure)"))

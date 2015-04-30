@@ -23,9 +23,9 @@
               "text/html"))))
 
    (testing "record page"
-     (with-redefs [pages/record (fn [data] (str "record page: " data))]
+     (with-redefs [pages/record (fn [data & xref]
+                                  (str "record page: " data " " xref))]
        (let [response (handler (mock/request :get "/records/@I23@"))]
          (is (= (:status response) 200))
          (is  (= (:body response)
-                 (str "record page: "
-                      (merge app-data {:xref "@I23@"})))))))))
+                 (str "record page: " app-data " " '("@I23@")))))))))

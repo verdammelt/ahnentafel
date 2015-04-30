@@ -11,8 +11,8 @@
   (routes
        (GET "/" [] (pages/home app-data))
        (GET "/about" [] (pages/about app-data))
-       (GET "/records/:xref" [xref] (pages/record (merge app-data {:xref xref})))
-       (ANY "*" request (-> (pages/not-found (merge request app-data))
+       (GET "/records/:xref" [xref] (pages/record app-data xref))
+       (ANY "*" request (-> (pages/not-found app-data request)
                             response/response
                             (response/status 404)
                             (response/header "Content-Type" "text/html")))))

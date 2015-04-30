@@ -89,7 +89,7 @@
 )
 
 (defmacro def-layout-template [name & forms]
-  `(html/deftemplate ~name "site/templates/index.html" [~'data]
+  `(html/deftemplate ~name "site/templates/index.html" [~'data & ~'args]
      ~@forms
      [:#version] (html/content (:version ~'data))))
 
@@ -99,12 +99,15 @@
                                        :filename (:gedcom-file data)) )))
 
 (def-layout-template not-found
-  [:#content] (html/content (str (:uri data) " not found.")))
+  [:#content] (let [request (first args)]
+                (html/content (str (:uri request) " not found."))))
 
 (def-layout-template record
-  [:#content] (html/substitute (record-page-snippet (data/find-record
-                                                     ((:get-data data))
-                                                     (select-keys data [:xref])))))
+  [:#content]
+  (let [xref (first args)]
+    (html/substitute (record-page-snippet (data/find-record
+                                           ((:get-data data))
+                                           {:xref xref})))))
 
 (def-layout-template about
   [:#content] (html/content (html/html-resource "site/templates/about.html")))
