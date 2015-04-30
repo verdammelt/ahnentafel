@@ -9,10 +9,10 @@
 
 (defn make-routes [app-data]
   (routes
-       (GET "/" [] (pages/home-page app-data))
-       (GET "/about" [] (pages/about-page app-data))
-       (GET "/records/:xref" [xref] (pages/record-page (merge app-data {:xref xref})))
-       (ANY "*" request (-> (pages/page-not-found (merge request app-data))
+       (GET "/" [] (pages/home app-data))
+       (GET "/about" [] (pages/about app-data))
+       (GET "/records/:xref" [xref] (pages/record (merge app-data {:xref xref})))
+       (ANY "*" request (-> (pages/not-found (merge request app-data))
                             response/response
                             (response/status 404)
                             (response/header "Content-Type" "text/html")))))

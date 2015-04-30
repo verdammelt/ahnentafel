@@ -93,18 +93,18 @@
      ~@forms
      [:#version] (html/content (:version ~'data))))
 
-(def-layout-template home-page
+(def-layout-template home
   [:#content] (html/substitute (home-page-snippet
                                 (assoc (data/header ((:get-data data)))
                                        :filename (:gedcom-file data)) )))
 
-(def-layout-template page-not-found
+(def-layout-template not-found
   [:#content] (html/content (str (:uri data) " not found.")))
 
-(def-layout-template record-page
+(def-layout-template record
   [:#content] (html/substitute (record-page-snippet (data/find-record
                                                      ((:get-data data))
                                                      (select-keys data [:xref])))))
 
-(def-layout-template about-page
+(def-layout-template about
   [:#content] (html/content (html/html-resource "site/templates/about.html")))

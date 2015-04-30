@@ -9,7 +9,7 @@
   (let [app-data {:version "x.x.x"}
         handler (make-handler app-data)]
    (testing "home page"
-     (with-redefs [pages/home-page (fn [data] (str "homepage: " data))]
+     (with-redefs [pages/home (fn [data] (str "homepage: " data))]
        (let [response (handler (mock/request :get "/"))]
          (is (= (:status response) 200))
          (is (= (:body response)
@@ -23,7 +23,7 @@
               "text/html"))))
 
    (testing "record page"
-     (with-redefs [pages/record-page (fn [data] (str "record page: " data))]
+     (with-redefs [pages/record (fn [data] (str "record page: " data))]
        (let [response (handler (mock/request :get "/records/@I23@"))]
          (is (= (:status response) 200))
          (is  (= (:body response)
