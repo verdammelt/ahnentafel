@@ -30,11 +30,10 @@
                             (if-let [record
                                      (or (and xref (find-xref tree xref))
                                          (find-item tree "INDI"))]
-                              (do (println "") (println record) (println "")
-                                (assoc m
-                                      :start-record
-                                      {:name (find-item-value record "NAME")
-                                       :xref (:xref record)}))
+                              (assoc m
+                                     :start-record
+                                     {:name (find-item-value record "NAME")
+                                      :xref (:xref record)})
                               m))]
      (-> {:number-of-records (count (:subordinate-lines tree))
           :destination (header-value "DEST")
