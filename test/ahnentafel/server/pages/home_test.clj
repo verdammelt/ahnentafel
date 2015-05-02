@@ -7,15 +7,17 @@
 
 (deftest home-page-test
   (with-redefs [query/header (constantly {:number-of-records 23
-                                         :source "Author"
-                                         :destination "Recipient"
-                                         :file "test.ged"
-                                         :file-time "13 SEP 2000"
-                                         :gedcom {:version "5.5.1"
-                                                  :type "LINEAGE-LINKED"}
-                                         :encoding "ANSEL"
-                                         :submitter {:xref "@I31@"
-                                                     :name "Fred Smith"}})]
+                                          :source "Author"
+                                          :destination "Recipient"
+                                          :file "test.ged"
+                                          :file-time "13 SEP 2000"
+                                          :gedcom {:version "5.5.1"
+                                                   :type "LINEAGE-LINKED"}
+                                          :encoding "ANSEL"
+                                          :submitter {:xref "@I31@"
+                                                      :name "Fred Smith"}
+                                          :start-record {:xref "@I13@"
+                                                         :name "Joe Smith"}})]
     (let [page (get-page home)]
       (are-on-page
        "<title>Ahnentafel</title>"
@@ -26,4 +28,5 @@
        "on 13 SEP 2000"
        "GEDCOM version 5.5.1 (LINEAGE-LINKED ANSEL)"
        "Submitted by <a href=\"/records/@I31@\">Fred Smith</a>"
+       "Start by looking at <a href=\"/records/@I13@\">Joe Smith</a>"
        "<span id=\"version\">x.x.x</span>"))))

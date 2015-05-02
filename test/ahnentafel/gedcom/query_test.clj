@@ -9,7 +9,7 @@
 (def test-tree (read-file (resource "sample.ged")))
 
 (deftest header-data
-  (let [header (query/header test-tree)]
+  (let [header (query/header test-tree "@I2695@")]
     (is (= (:number-of-records header) 45))
     (is (= (:source header) "Ancestral Quest"))
     (is (= (:destination header) "Ancestral Quest"))
@@ -17,7 +17,16 @@
     (is (= (:file-time header) "13 SEP 2000 10:23:03"))
     (is (= (:gedcom header) {:version "5.5" :type "LINEAGE-LINKED"}))
     (is (= (:encoding header) "ANSEL"))
-    (is (= (:submitter header) {:name "John Doe" :xref "@SUB1@"})))
+    (is (= (:submitter header) {:name "John Doe" :xref "@SUB1@"}))
+    (is (= (:start-record header) {:name "Emerald /Dearden/" :xref "@I2695@"})))
+
+  (testing "without start-record uses first INDI"
+    (is (= (:start-record (query/header test-tree "@I9999999"))
+           {:name "William Russell /Hartley/"
+            :xref "@I52@"}))
+    (is (= (:start-record (query/header test-tree nil))
+           {:name "William Russell /Hartley/"
+            :xref "@I52@"})))
 
   (testing "without submitter"
     (let [new-tree (-> (gedcom-zipper test-tree)

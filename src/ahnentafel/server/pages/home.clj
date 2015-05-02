@@ -10,6 +10,13 @@
     (html/substitute (f value))
     identity))
 
+(defn- link-or-blank [record label]
+  (html/substitute
+   (if-let [{:keys [xref name]} record]
+     (conj (full-record-link xref name)
+           (html/html-snippet label))
+     "")))
+
 (html/defsnippet home-page-snippet "site/templates/home.html" [:div#home-contents]
   [header-data]
   [:#home-contents]
@@ -32,13 +39,13 @@
   (maybe-substitute header-data :file-time #(str "on " %))
 
   [:#submitter]
-  (html/substitute
-   (if-let [submitter (:submitter header-data)]
-     (conj (full-record-link (:xref submitter) (:name submitter))
-           (html/html-snippet "Submitted by "))
-     "")))
+  (link-or-blank (:submitter header-data) "Submitted by ")
+
+  [:#start-record]
+  (link-or-blank (:start-record header-data) "Start by looking at "))
 
 (def-layout-template home
   [:#content] (html/substitute (home-page-snippet
-                                (assoc (query/header ((:get-data data)))
+                                (assoc (query/header ((:get-data data))
+                                                     (:start-record data))
                                        :filename (:gedcom-file data)) )))

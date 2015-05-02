@@ -11,7 +11,8 @@
         app-data {:version (:ahnentafel-version env)
                   :port (:port env)
                   :gedcom-file file
-                  :get-data (fn [] @data)}
+                  :get-data (fn [] @data)
+                  :start-record (:start-record env)}
         handler (make-handler app-data)]
     (merge {:handler handler} app-data)))
 

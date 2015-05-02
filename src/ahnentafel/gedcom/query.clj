@@ -12,27 +12,40 @@
 (defn- find-item-value [tree tag]
   (:value (find-item tree tag)))
 
-(defn header [tree]
-  (let [header (find-item tree "HEAD")
-        header-value (fn [tag] (find-item-value header tag))
-        add-submitter (fn [m]
-                        (if-let [xref (header-value "SUBM")]
-                          (assoc m :submitter {:name (find-item-value (find-xref tree xref) "NAME")
-                                               :xref xref})
-                          m))
-        add-source (fn [m]
-                     (let [source (find-item header "SOUR")]
-                       (assoc m :source (:value (or (find-item source "NAME")
-                                                    source)))))]
-    (-> {:number-of-records (count (:subordinate-lines tree))
-         :destination (header-value "DEST")
-         :file (header-value "FILE")
-         :file-time (header-value "DATE")
-         :gedcom {:version (find-item-value (find-item header "GEDC") "VERS")
-                  :type (find-item-value (find-item header "GEDC") "FORM")}
-         :encoding (header-value "CHAR")}
-        (add-source)
-        (add-submitter))))
+(defn header
+  ([tree] (header tree nil))
+  ([tree start-record]
+   (let [header (find-item tree "HEAD")
+         header-value (fn [tag] (find-item-value header tag))
+         add-submitter (fn [m]
+                         (if-let [xref (header-value "SUBM")]
+                           (assoc m :submitter {:name (find-item-value (find-xref tree xref) "NAME")
+                                                :xref xref})
+                           m))
+         add-source (fn [m]
+                      (let [source (find-item header "SOUR")]
+                        (assoc m :source (:value (or (find-item source "NAME")
+                                                     source)))))
+         add-start-record (fn [m xref]
+                            (if-let [record
+                                     (or (and xref (find-xref tree xref))
+                                         (find-item tree "INDI"))]
+                              (do (println "") (println record) (println "")
+                                (assoc m
+                                      :start-record
+                                      {:name (find-item-value record "NAME")
+                                       :xref (:xref record)}))
+                              m))]
+     (-> {:number-of-records (count (:subordinate-lines tree))
+          :destination (header-value "DEST")
+          :file (header-value "FILE")
+          :file-time (header-value "DATE")
+          :gedcom {:version (find-item-value (find-item header "GEDC") "VERS")
+                   :type (find-item-value (find-item header "GEDC") "FORM")}
+          :encoding (header-value "CHAR")}
+         (add-source)
+         (add-submitter)
+         (add-start-record start-record)))))
 
 (defn find-record [tree query]
   (let [record (find-xref tree (:xref query))
