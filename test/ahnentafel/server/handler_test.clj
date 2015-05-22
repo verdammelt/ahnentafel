@@ -21,8 +21,7 @@
    (testing "404 response"
      (let [response (get-page "/unknown")]
        (is (= (:status response) 404))
-       (is (.contains (:body response) "/unknown not found."))
-       (is (= (get-in response [:headers  "Content-Type"]) "text/html"))))
+       (is (.contains (:body response) "/unknown not found."))))
 
    (testing "record page"
      (with-redefs [record (fn [data & xref]
