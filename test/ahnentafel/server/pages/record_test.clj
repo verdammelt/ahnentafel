@@ -60,8 +60,8 @@
           (is (= @trapped-query {:xref "@FAM1@"}))
           (are-on-page
            "FAMILY"
-           "Spouse: <span id=\"person-info\">Ted</span>"
-           "Spouse: <span id=\"person-info\">Carol</span>"
+           "Spouse: <a id=\"person-info\" href=\"/records/@I1@\">Ted</a>"
+           "Spouse: <a id=\"person-info\" href=\"/records/@I2@\">Carol</a>"
            "Married: <span id=\"event-info\">1 JAN 2000 00:00:00 church</span>"
-           "Child: <span id=\"person-info\">Bob</span>"
-           "Child: <span id=\"person-info\">Alice</span>"))))))
+           "Child: <a id=\"person-info\" href=\"/records/@I3@\">Bob</a>"
+           "Child: <a id=\"person-info\" href=\"/records/@I4@\">Alice</a>"))))))
