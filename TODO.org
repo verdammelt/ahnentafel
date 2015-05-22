@@ -15,12 +15,12 @@ CLOSED: [2015-04-28 Tue 09:40]
 CLOSED: [2015-04-28 Tue 08:12]
 ** DONE roll up TIME under DATE
 CLOSED: [2015-04-28 Tue 08:45]
-* DOING Release #2 (public proof of concept)
+* DONE Release #2 (public proof of concept)
 ** CNCL Filter out sensitive data
 ** DONE Serve up records by XREFd
 CLOSED: [2015-04-29 Wed 16:29]
 *** Server needs to serve up the html of the data or the json depending on if JS is enabled.
-** DOING Landing page with my data on it
+** DONE Landing page with my data on it
 *** link bar at top.
 *** sprinkle in a small amount of bootstrap
 ** DONE About Page with explanation
@@ -36,7 +36,9 @@ CLOSED: [2015-05-02 Sat 15:38]
 
 
 * Backlog
-** Lots of duplication in test/production code due to structure.
+** Some people are spouses in more than one family (e.g. @I56@ in simpson.ged)
+** Serve up data file from S3 - so I can remove simpson.ged.
+** DONE Lots of duplication in test/production code due to structure.
 ** Refactor subordinate-lines to take a zip
 Then each function could take a zip and return a zipper finally at the
 end of process we zip/root
@@ -46,7 +48,7 @@ end of process we zip/root
 ** Display actual trees forward from a person
 ** Sibling display
 ** German translation
-** Itality translation
+** Italian translation
 ** "Responsive" Design
 ** Display can handle UTF-8
 ** Automated process to export gedcom & deploy to app
