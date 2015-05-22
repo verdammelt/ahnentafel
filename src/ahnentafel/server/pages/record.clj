@@ -23,7 +23,7 @@
        (if akas
          (str " (a.k.a. " (clojure.string/join ", " akas) ")"))))
 
-(html/defsnippet record-page-snippet "site/templates/record.html" [:div#record-contents]
+(html/defsnippet individual-page-snippet "site/templates/record.html" [:div#individual-record]
   [record]
 
   [:#type]
@@ -54,7 +54,7 @@
 
 (def-layout-template record
   [:#content]
-  (let [xref (first args)]
-    (html/substitute (record-page-snippet (query/find-record
-                                           ((:get-data data))
-                                           {:xref xref})))))
+  (let [dispatch {:individual individual-page-snippet}
+        xref (first args)
+        record (query/find-record ((:get-data data)) {:xref xref})]
+    (html/substitute (((:type record) dispatch) record))))

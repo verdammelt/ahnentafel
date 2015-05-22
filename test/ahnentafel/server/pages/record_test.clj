@@ -6,8 +6,8 @@
   (:require [clojure.test :refer :all]))
 
 
-(deftest record-page-test
-  (testing "individual record - maximum data"
+(deftest individual-record-test
+  (testing "maximum data"
     (with-local-vars [trapped-query nil]
       (with-redefs [query/find-record
                     (fn [data query]
@@ -36,7 +36,7 @@
            "<a href=\"/records/@FAM1@\">Go To Family (where this person was a child)</a>"
            "<a href=\"/records/@FAM2@\">Go To Family (where this person was a spouse)</a>")))))
 
-  (testing "individual record - with parts missing"
+  (testing "with parts missing"
     (with-redefs [query/find-record
                   (constantly {:type :individual})]
       (let [page (get-page record "@I23@")]
