@@ -42,3 +42,26 @@
       (let [page (get-page record "@I23@")]
         (are [text] (page-not-contains? text)
              "Name" "Sex" "Born" "Died" "Buried" "Go To Family")))))
+
+(deftest family-record-test
+  (testing "maximum data"
+    (with-local-vars [trapped-query nil]
+      (with-redefs [query/find-record
+                    (fn [data query]
+                      (var-set trapped-query query)
+                      {:type :family
+                       :spouses [{:xref "@I1@" :name "Ted"}
+                                 {:xref "@I2@" :name "Carol"}]
+                       :marriage {:date "1 JAN 2000 00:00:00"
+                                  :place "church"}
+                       :children [{:xref "@I3@" :name "Bob"}
+                                  {:xref "@I4@" :name "Alice"}]})]
+        (let [page (get-page record "@FAM1@")]
+          (is (= @trapped-query {:xref "@FAM1@"}))
+          (are-on-page
+           "FAMILY"
+           "Spouse: <span id=\"person-info\">Ted</span>"
+           "Spouse: <span id=\"person-info\">Carol</span>"
+           "Married: <span id=\"event-info\">1 JAN 2000 00:00:00 church</span>"
+           "Child: <span id=\"person-info\">Bob</span>"
+           "Child: <span id=\"person-info\">Alice</span>"))))))

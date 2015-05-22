@@ -52,9 +52,30 @@
   (maybe-content record :family-as-spouse
                  #(full-record-link % "Go To Family (where this person was a spouse)")))
 
+(html/defsnippet family-page-snippet "site/templates/record.html" [:div#family-record]
+  [record]
+
+  [:#type]
+  (html/content (clojure.string/upper-case (name (:type record))))
+
+  [:#spouse]
+  (html/clone-for [spouse (:spouses record)]
+                  [:#person-info] (html/content (:name spouse)))
+
+  [:#married :#event-info]
+  (html/content (let [marriage (:marriage record)]
+                  (str (:date marriage) " " (:place marriage))))
+
+  [:#child]
+  (html/clone-for [child (:children record)]
+                  [:#person-info] (html/content (:name child)))
+
+  )
+
 (def-layout-template record
   [:#content]
-  (let [dispatch {:individual individual-page-snippet}
+  (let [dispatch {:individual individual-page-snippet
+                  :family family-page-snippet}
         xref (first args)
         record (query/find-record ((:get-data data)) {:xref xref})]
     (html/substitute (((:type record) dispatch) record))))
