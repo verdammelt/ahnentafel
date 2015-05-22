@@ -4,6 +4,9 @@
 (defn- set-port [port]
   (alter-var-root #'env assoc :port port))
 
+(defn- set-data-file [file]
+  (alter-var-root #'env assoc :gedcom-file file))
+
 (def the-system "The System." nil)
 
 (defn init
