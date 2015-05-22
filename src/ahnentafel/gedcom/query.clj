@@ -61,10 +61,14 @@
                            (assoc m k
                                   {:date (find-item-value e "DATE")
                                    :place (find-item-value e "PLAC")})
-                           m))]
-    (print record)
-    (print (type-of record))
+                           m))
+
+        person-info (fn [r]
+                      {:xref (:xref r)
+                       :name (find-item-value r "NAME")})
+        ]
     (-> {:type (type-of record)}
+
         (add-value :name (map :value (find-items record "NAME")))
         (add-value :sex (find-item-value record "SEX"))
         (add-value :family-as-child (find-item-value record "FAMC"))
@@ -72,4 +76,12 @@
         (add-event-info :birth (find-item record "BIRT"))
         (add-event-info :death (find-item record "DEAT"))
         (add-event-info :burial (find-item record "BURI"))
-        (add-value :husb (find-item-value record "HUSB")))))
+
+        (add-value :spouses
+                   [(person-info (find-xref tree (find-item-value record "HUSB")))
+                    (person-info (find-xref tree (find-item-value record "WIFE")))])
+        (add-event-info :marriage (find-item record "MARR"))
+        (add-value :children
+                   (map #(person-info (find-xref tree (:value %)))
+                        (find-items record "CHIL")))
+)))

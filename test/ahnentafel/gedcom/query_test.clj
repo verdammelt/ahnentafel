@@ -78,4 +78,11 @@
 
   (testing "family"
     (let [record (query/find-record test-tree {:xref "@F661@"})]
-      (is (= (:type record) :family)))))
+      (is (= (:type record) :family))
+      (is (= (:spouses record)
+             [{:xref "@I2694@" :name "William /Hartley/"}
+              {:xref "@I2695@" :name "Emerald /Dearden/"}]))
+      (is (= (:marriage record)
+             {:date "8 MAY 1885" :place "Logan,Cache,Utah"}))
+      (is (= (:children record)
+             [{:xref "@I52@" :name "William Russell /Hartley/"}])))))

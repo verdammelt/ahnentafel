@@ -26,7 +26,7 @@ CLOSED: [2015-04-29 Wed 16:29]
 ** DONE About Page with explanation
 CLOSED: [2015-05-02 Sat 15:38]
 * Release #3 (fully public)
-** Follow links on person to see family
+** DONE Follow links on person to see family
 ** Follow links on family to see other people
 * Release #4 
 ** User can search for specific person (first & last name)
