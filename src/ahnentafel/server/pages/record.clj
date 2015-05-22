@@ -23,6 +23,8 @@
        (if akas
          (str " (a.k.a. " (clojure.string/join ", " akas) ")"))))
 
+(defn- xref-link [r] (str "/records/" (:xref r)))
+
 (html/defsnippet individual-page-snippet "site/templates/record.html" [:div#individual-record]
   [record]
 
@@ -60,7 +62,7 @@
 
   [:#spouse]
   (html/clone-for [spouse (:spouses record)]
-                  [:#person-info] (html/set-attr :href (str "/records/" (:xref spouse)) )
+                  [:#person-info] (html/set-attr :href (xref-link spouse))
                   [:#person-info] (html/content (:name spouse)))
 
   [:#married :#event-info]
@@ -69,7 +71,7 @@
 
   [:#child]
   (html/clone-for [child (:children record)]
-                  [:#person-info] (html/set-attr :href (str "/records/" (:xref child)) )
+                  [:#person-info] (html/set-attr :href (xref-link child))
                   [:#person-info] (html/content (:name child)))
   )
 
