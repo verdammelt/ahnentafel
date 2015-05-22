@@ -49,20 +49,27 @@
 (defn find-record [tree query]
   (let [record (find-xref tree (:xref query))
         type-of (fn [r] (get {"INDI" :individual
-                             "SUBM" :submitter}
+                             "SUBM" :submitter
+                             "FAM" :family}
                             (:tag r)
                             :unknown))
+
+        add-value (fn [m k v] (if (not (empty? v)) (assoc m k v) m))
+
         add-event-info (fn [m k e]
                          (if e
                            (assoc m k
                                   {:date (find-item-value e "DATE")
                                    :place (find-item-value e "PLAC")})
                            m))]
-    (-> {:type (type-of record)
-         :name (map :value (find-items record "NAME"))
-         :sex (find-item-value record "SEX")
-         :family-as-child (find-item-value record "FAMC")
-         :family-as-spouse (find-item-value record "FAMS")}
+    (print record)
+    (print (type-of record))
+    (-> {:type (type-of record)}
+        (add-value :name (map :value (find-items record "NAME")))
+        (add-value :sex (find-item-value record "SEX"))
+        (add-value :family-as-child (find-item-value record "FAMC"))
+        (add-value :family-as-spouse (find-item-value record "FAMS"))
         (add-event-info :birth (find-item record "BIRT"))
         (add-event-info :death (find-item record "DEAT"))
-        (add-event-info :burial (find-item record "BURI")))))
+        (add-event-info :burial (find-item record "BURI"))
+        (add-value :husb (find-item-value record "HUSB")))))

@@ -50,7 +50,7 @@
   (testing "if record not found"
     (let [record (query/find-record test-tree {:xref "xref not to be found"})]
       (is (= (:type record) :unknown))
-      (is (= (:name record) '()))))
+      (is (= (:name record) nil))))
 
   (testing "individual"
     (let [record (query/find-record test-tree {:xref "@I52@"})]
@@ -74,4 +74,8 @@
             (str "Value of key " x " should be nil")))
       (doseq [x [:birth :death :burial]]
         (is (not (contains? record x))
-            (str "Record should not contain key " x))))))
+            (str "Record should not contain key " x)))))
+
+  (testing "family"
+    (let [record (query/find-record test-tree {:xref "@F661@"})]
+      (is (= (:type record) :family)))))
