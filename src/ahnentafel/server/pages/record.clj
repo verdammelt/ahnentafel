@@ -47,16 +47,16 @@
   (maybe-content record :burial #(event-info "Buried:" %))
 
   [:#family-as-child]
-  (maybe-content record :family-as-child
-                 #(full-record-link % "View parents"))
+  (if-let [family (:family-as-child record)]
+    (fn [node] (html/at node
+                       [:#parent-link]
+                       (html/set-attr :href (xref-link {:xref family})))))
 
   [:#family-as-spouse]
   (if-let [families (:family-as-spouse record)]
     (html/clone-for [fams families]
-                    (html/content (full-record-link (:xref fams)
-                                                    (str  "View family with "
-                                                          (:name (:spouse fams))))))
-    identity))
+                    [:#spouse-link] (html/set-attr :href (xref-link fams))
+                    [:#spouse-link :#spouse-name] (html/content (:name (:spouse fams))))))
 
 (html/defsnippet family-page-snippet "site/templates/record.html" [:div#family-record]
   [record]

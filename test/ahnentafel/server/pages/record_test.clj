@@ -35,9 +35,9 @@
            "Born: 1 JAN 1970 00:00:00 near his mother"
            "Died: 1 JAN 2000 00:00:00 graveside"
            "Buried: 2 JAN 2000 00:00:00 6 feet under"
-           "<a href=\"/records/@FAM1@\">View parents</a>"
-           "<a href=\"/records/@FAM2@\">View family with Mary /Jones</a>"
-           "<a href=\"/records/@FAM3@\">View family with Jane /Smith</a>")))))
+           "<a id=\"parent-link\" href=\"/records/@FAM1@\">View parents</a>"
+           "<a id=\"spouse-link\" href=\"/records/@FAM2@\">View family with <span id=\"spouse-name\">Mary /Jones</span></a>"
+           "<a id=\"spouse-link\" href=\"/records/@FAM3@\">View family with <span id=\"spouse-name\">Jane /Smith</span></a>")))))
 
   (testing "with parts missing"
     (with-redefs [query/find-record
