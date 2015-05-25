@@ -17,6 +17,8 @@
            (html/html-snippet label))
      "")))
 
+(defn- xref-link [r] (str "/records/" (:xref r)))
+
 (html/defsnippet home-page-snippet "site/templates/home.html" [:div#home-contents]
   [header-data]
   [:#home-contents]
@@ -39,10 +41,16 @@
   (maybe-substitute header-data :file-time #(str "on " %))
 
   [:#submitter]
-  (link-or-blank (:submitter header-data) "Submitted by ")
+  (if-let [submitter (:submitter header-data)]
+    (fn [node] (html/at node
+                       [:a] (html/set-attr :href (xref-link submitter))
+                       [:a] (html/content (:name submitter)))))
 
   [:#start-record]
-  (link-or-blank (:start-record header-data) "Start by looking at "))
+  (if-let [start-record (:start-record header-data)]
+    (fn [node] (html/at node
+                       [:a] (html/set-attr :href (xref-link start-record))
+                       [:a] (html/content (:name start-record))))))
 
 (def-layout-template home
   [:#content] (html/substitute (home-page-snippet
