@@ -27,7 +27,8 @@ CLOSED: [2015-04-29 Wed 16:29]
 CLOSED: [2015-05-02 Sat 15:38]
 * Release #3 (fully public)
 ** DONE Follow links on person to see family
-** Follow links on family to see other people
+** DONE Follow links on family to see other people
+** Some people are spouses in more than one family (e.g. @I56@ in simpson.ged)
 * Release #4 
 ** User can search for specific person (first & last name)
 ** Search can return multiple matches
@@ -36,7 +37,6 @@ CLOSED: [2015-05-02 Sat 15:38]
 
 
 * Backlog
-** Some people are spouses in more than one family (e.g. @I56@ in simpson.ged)
 ** Serve up data file from S3 - so I can remove simpson.ged.
 ** DONE Lots of duplication in test/production code due to structure.
 ** Refactor subordinate-lines to take a zip
