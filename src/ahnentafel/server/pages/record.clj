@@ -51,8 +51,10 @@
                  #(full-record-link % "Go To Family (where this person was a child)"))
 
   [:#family-as-spouse]
-  (maybe-content record :family-as-spouse
-                 #(full-record-link % "Go To Family (where this person was a spouse)")))
+  (if-let [families (:family-as-spouse record)]
+    (html/clone-for [fams families]
+                    (html/content (full-record-link fams "Go To Family (where this person was a spouse)")))
+    identity))
 
 (html/defsnippet family-page-snippet "site/templates/record.html" [:div#family-record]
   [record]

@@ -72,7 +72,7 @@
         (add-value :name (map :value (find-items record "NAME")))
         (add-value :sex (find-item-value record "SEX"))
         (add-value :family-as-child (find-item-value record "FAMC"))
-        (add-value :family-as-spouse (find-item-value record "FAMS"))
+        (add-value :family-as-spouse (map :value (find-items record "FAMS")))
         (add-event-info :birth (find-item record "BIRT"))
         (add-event-info :death (find-item record "DEAT"))
         (add-event-info :burial (find-item record "BURI"))
@@ -83,5 +83,4 @@
         (add-event-info :marriage (find-item record "MARR"))
         (add-value :children
                    (map #(person-info (find-xref tree (:value %)))
-                        (find-items record "CHIL")))
-)))
+                        (find-items record "CHIL"))))))

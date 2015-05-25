@@ -22,7 +22,7 @@
                                :place "6 feet under"}
                        :sex "M"
                        :family-as-child "@FAM1@"
-                       :family-as-spouse "@FAM2@"
+                       :family-as-spouse '("@FAM2@" "@FAM3@")
                        })]
         (let [page (get-page record "@I23@")]
           (is (= @trapped-query {:xref "@I23@"}))
@@ -34,7 +34,8 @@
            "Died: 1 JAN 2000 00:00:00 graveside"
            "Buried: 2 JAN 2000 00:00:00 6 feet under"
            "<a href=\"/records/@FAM1@\">Go To Family (where this person was a child)</a>"
-           "<a href=\"/records/@FAM2@\">Go To Family (where this person was a spouse)</a>")))))
+           "<a href=\"/records/@FAM2@\">Go To Family (where this person was a spouse)</a>"
+           "<a href=\"/records/@FAM3@\">Go To Family (where this person was a spouse)</a>")))))
 
   (testing "with parts missing"
     (with-redefs [query/find-record
