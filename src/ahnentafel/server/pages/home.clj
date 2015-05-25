@@ -1,7 +1,7 @@
 (ns ahnentafel.server.pages.home
   (:require [net.cgrand.enlive-html :as html])
   (:require [ahnentafel.server.pages.layout :refer [def-layout-template]])
-  (:require [ahnentafel.server.pages.util :refer [full-record-link]])
+  (:require [ahnentafel.server.pages.util :refer [xref-link]])
   (:require [ahnentafel.gedcom.query :as query]))
 
 (defn- maybe-substitute
@@ -9,15 +9,6 @@
   (if-let [value (get m k)]
     (html/substitute (f value))
     identity))
-
-(defn- link-or-blank [record label]
-  (html/substitute
-   (if-let [{:keys [xref name]} record]
-     (conj (full-record-link xref name)
-           (html/html-snippet label))
-     "")))
-
-(defn- xref-link [r] (str "/records/" (:xref r)))
 
 (html/defsnippet home-page-snippet "site/templates/home.html" [:div#home-contents]
   [header-data]

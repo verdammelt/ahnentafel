@@ -1,7 +1,7 @@
 (ns ahnentafel.server.pages.record
   (:require [net.cgrand.enlive-html :as html]
             [ahnentafel.server.pages.layout :refer [def-layout-template]]
-            [ahnentafel.server.pages.util :refer [full-record-link]])
+            [ahnentafel.server.pages.util :refer [xref-link]])
   (:require [ahnentafel.gedcom.query :as query]))
 
 
@@ -22,8 +22,6 @@
   (str name
        (if akas
          (str " (a.k.a. " (clojure.string/join ", " akas) ")"))))
-
-(defn- xref-link [r] (str "/records/" (:xref r)))
 
 (html/defsnippet individual-page-snippet "site/templates/record.html" [:div#individual-record]
   [record]
