@@ -63,7 +63,8 @@
       (is (= (:family-as-child record) "@F661@")))
 
     (let [record (query/find-record test-tree {:xref "@I2694@"})]
-      (is (= (:family-as-spouse record) ["@F661@"]))))
+      (is (= (:family-as-spouse record) [{:xref "@F661@"
+                                          :spouse {:xref "@I2695@" :name "Emerald /Dearden/"}}]))))
 
   (testing "submitter"
     (let [record (query/find-record test-tree {:xref "@SUB1@"})]

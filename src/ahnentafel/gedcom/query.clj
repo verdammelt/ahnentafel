@@ -66,13 +66,24 @@
         person-info (fn [r]
                       {:xref (:xref r)
                        :name (find-item-value r "NAME")})
+
+        spouse-info (fn [i fams]
+                      (let [xref (:value fams)
+                            family (find-xref tree xref)
+                            spouses (map #(find-item-value family %)
+                                         '("HUSB" "WIFE"))
+                            spouse-xref (first (filter #(not (= % (:xref i))) spouses))
+                            other-person (find-xref tree spouse-xref)]
+                        {:xref xref
+                         :spouse {:xref (:xref other-person)
+                                  :name (find-item-value other-person "NAME")}}))
         ]
     (-> {:type (type-of record)}
 
         (add-value :name (map :value (find-items record "NAME")))
         (add-value :sex (find-item-value record "SEX"))
         (add-value :family-as-child (find-item-value record "FAMC"))
-        (add-value :family-as-spouse (map :value (find-items record "FAMS")))
+        (add-value :family-as-spouse (map #(spouse-info record %) (find-items record "FAMS")))
         (add-event-info :birth (find-item record "BIRT"))
         (add-event-info :death (find-item record "DEAT"))
         (add-event-info :burial (find-item record "BURI"))

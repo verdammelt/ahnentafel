@@ -5,7 +5,6 @@
   (:require [ahnentafel.gedcom.query :as query])
   (:require [clojure.test :refer :all]))
 
-
 (deftest individual-record-test
   (testing "maximum data"
     (with-local-vars [trapped-query nil]
@@ -22,7 +21,10 @@
                                :place "6 feet under"}
                        :sex "M"
                        :family-as-child "@FAM1@"
-                       :family-as-spouse '("@FAM2@" "@FAM3@")
+                       :family-as-spouse '({:xref "@FAM2@"
+                                            :spouse {:xref "@I13@" :name "Mary /Jones"}}
+                                           {:xref "@FAM3@"
+                                            :spouse {:xref "@I23@" :name "Jane /Smith"}})
                        })]
         (let [page (get-page record "@I23@")]
           (is (= @trapped-query {:xref "@I23@"}))
@@ -33,16 +35,16 @@
            "Born: 1 JAN 1970 00:00:00 near his mother"
            "Died: 1 JAN 2000 00:00:00 graveside"
            "Buried: 2 JAN 2000 00:00:00 6 feet under"
-           "<a href=\"/records/@FAM1@\">Go To Family (where this person was a child)</a>"
-           "<a href=\"/records/@FAM2@\">Go To Family (where this person was a spouse)</a>"
-           "<a href=\"/records/@FAM3@\">Go To Family (where this person was a spouse)</a>")))))
+           "<a href=\"/records/@FAM1@\">View parents</a>"
+           "<a href=\"/records/@FAM2@\">View family with Mary /Jones</a>"
+           "<a href=\"/records/@FAM3@\">View family with Jane /Smith</a>")))))
 
   (testing "with parts missing"
     (with-redefs [query/find-record
                   (constantly {:type :individual})]
       (let [page (get-page record "@I23@")]
         (are [text] (page-not-contains? text)
-             "Name" "Sex" "Born" "Died" "Buried" "Go To Family")))))
+             "Name" "Sex" "Born" "Died" "Buried" "View family with" "View parents")))))
 
 (deftest family-record-test
   (testing "maximum data"
