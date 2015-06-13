@@ -3,6 +3,7 @@
 
 (defn read-file-lines [file]
   "Read all the lines of the file. Returns NIL if file does not exist."
-  (when (.exists (as-file file))
+  (try
     (with-open [rdr (reader file)]
-      (doall (line-seq rdr)))))
+      (doall (line-seq rdr)))
+    (catch Exception e nil)))
