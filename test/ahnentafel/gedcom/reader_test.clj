@@ -26,5 +26,5 @@
 
   (testing "s3 support"
     (let [local (read-file "resource:simple.ged")
-          remote (read-file "aws:ahnentafel#simple.ged")]
+          remote (read-file "s3://ahnentafel/simple.ged")]
       (is (= local remote)))))

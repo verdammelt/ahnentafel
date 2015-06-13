@@ -10,9 +10,9 @@
     (case (.getScheme uri)
       nil file
       "resource" (clojure.java.io/resource (.getSchemeSpecificPart uri))
-      "aws" (s3/generate-presigned-url (.getSchemeSpecificPart uri)
-                                       (.getFragment uri)
-                                       (time-coerce/to-long
-                                        (time-core/plus
-                                         (time-core/now)
-                                         (time-core/minutes 5)))))))
+      "s3" (s3/generate-presigned-url (.getAuthority uri)
+                                      (subs (.getPath uri) 1)
+                                      (time-coerce/to-long
+                                       (time-core/plus
+                                        (time-core/now)
+                                        (time-core/minutes 5)))))))
