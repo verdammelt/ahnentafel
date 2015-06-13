@@ -9,7 +9,8 @@
                  [ring "1.3.2"]
                  [ring/ring-defaults "0.1.5"]
                  [environ "1.0.0"]
-                 [enlive "1.1.5"]]
+                 [enlive "1.1.5"]
+                 [amazonica "0.3.24"]]
 
   :plugins [[lein-ring "0.9.4"]]
 
