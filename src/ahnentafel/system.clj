@@ -6,7 +6,7 @@
   (:require [clojure.java.io :refer [resource]]))
 
 (defn system []
-  (let [file (resource (:gedcom-file env "sample.ged"))
+  (let [file (:gedcom-file env "resource:sample.ged")
         data (future (read-file file))
         app-data {:version (:ahnentafel-version env)
                   :port (:port env)

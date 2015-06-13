@@ -2,11 +2,10 @@
   (:require [ahnentafel.gedcom.query :as query]
             [ahnentafel.gedcom.reader :refer [read-file]]
             [ahnentafel.gedcom.util.zipper :refer [gedcom-zipper]]
-            [clojure.java.io :refer [resource]]
             [clojure.zip :as zip]
             [clojure.test :refer :all]))
 
-(def test-tree (read-file (resource "sample.ged")))
+(def test-tree (read-file "resource:sample.ged"))
 
 (deftest header-data
   (let [header (query/header test-tree "@I2695@")]

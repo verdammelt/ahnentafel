@@ -10,6 +10,7 @@
                  [ring/ring-defaults "0.1.5"]
                  [environ "1.0.0"]
                  [enlive "1.1.5"]
+                 [clj-time "0.9.0"]
                  [amazonica "0.3.24"]]
 
   :plugins [[lein-ring "0.9.4"]]

@@ -4,7 +4,7 @@
 
 (deftest reader
   (testing "usual behavior"
-    (let [root (read-file (clojure.java.io/resource "simple.ged"))]
+    (let [root (read-file "resource:simple.ged")]
       (is (= "__ROOT__" (:tag root)))
       (let [records (:subordinate-lines root)]
         (is (= 7 (count records)))
@@ -17,9 +17,14 @@
       ))
 
   (testing "the big file"
-    (let [root (read-file (clojure.java.io/resource "allged.ged"))]
+    (let [root (read-file "resource:allged.ged")]
       (is (= 18 (count (:subordinate-lines root))))))
 
   (testing "error conditions"
-    (is (= (read-file "does-not-exist.ged")
-           {:tag "__ROOT__" :level -1}))))
+    (is (= (read-file "resource:does-not-exist.ged")
+           {:tag "__ROOT__" :level -1})))
+
+  (testing "s3 support"
+    (let [local (read-file "resource:simple.ged")
+          remote (read-file "aws:ahnentafel#simple.ged")]
+      (is (= local remote)))))
