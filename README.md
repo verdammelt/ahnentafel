@@ -11,9 +11,11 @@ only for read-only usage.
 Environment Variables:
 
 * `PORT`
-* `GEDCOM-FILE`
+* `GEDCOM-FILE` - URI to file. "resource" and "s3" schemes handled specially.
 * `ANALYTICS-ID`
 * `START-RECORD`
+* `AWS_ACCESS_KEY_ID` - needed when GEDCOM-FILE scheme is "s3"
+* `AWS_SECRET_KEY` - needed when GEDCOM-FILE scheme is "s3"
 
 ## License
 
