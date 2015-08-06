@@ -44,7 +44,7 @@
                   (constantly {:type :individual})]
       (let [page (get-page record "@I23@")]
         (are [text] (page-not-contains? text)
-             "Name" "Sex" "Born" "Died" "Buried" "View family with" "View parents")))))
+          "Sex" "Born" "Died" "Buried" "View family with" "View parents")))))
 
 (deftest family-record-test
   (testing "maximum data"
