@@ -1,5 +1,6 @@
 (ns ahnentafel.gedcom.reader-test
   (:require [ahnentafel.gedcom.reader :refer [read-file]]
+            [environ.core :refer [env]]
             [clojure.test :refer :all]))
 
 (deftest reader
@@ -24,7 +25,8 @@
     (is (= (read-file "resource:does-not-exist.ged")
            {:tag "__ROOT__" :level -1})))
 
-  (testing "s3 support"
-    (let [local (read-file "resource:simple.ged")
-          remote (read-file "s3://ahnentafel/simple.ged")]
-      (is (= local remote)))))
+  (when (not (:travis env))
+   (testing "s3 support"
+     (let [local (read-file "resource:simple.ged")
+           remote (read-file "s3://ahnentafel/simple.ged")]
+       (is (= local remote))))))
