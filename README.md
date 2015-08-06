@@ -6,6 +6,15 @@ The intended usage is to allow a URL to be sent to relatives to allow
 them to review genealogical data and to email back changes. Thus it is
 only for read-only usage.
 
+## Configuration
+
+Environment Variables:
+
+* `PORT`
+* `GEDCOM-FILE`
+* `ANALYTICS-ID`
+* `START-RECORD`
+
 ## License
 
 Copyright © 2015 Eclipse Public License

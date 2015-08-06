@@ -9,6 +9,7 @@
   (let [file (:gedcom-file env "resource:sample.ged")
         data (future (read-file file))
         app-data {:version (:ahnentafel-version env)
+                  :analytics-id (:analytics-id env)
                   :port (:port env)
                   :gedcom-file file
                   :get-data (fn [] @data)
