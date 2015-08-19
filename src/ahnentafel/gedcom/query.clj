@@ -3,44 +3,44 @@
 (defn- find-items [tag tree]
   (filter #(= tag (:tag %)) (:subordinate-lines tree)))
 
-(defn- find-item [tree tag]
+(defn- find-item [tag tree]
   (first (find-items tag tree)))
 
 (defn- find-xref [tree xref]
   (first (filter #(= xref (:xref %)) (:subordinate-lines tree))))
 
-(defn- find-item-value [tree tag]
-  (:value (find-item tree tag)))
+(defn- find-item-value [tag tree]
+  (:value (find-item tag tree)))
 
 (defn header
   ([tree] (header tree nil))
   ([tree start-record]
-   (let [header (find-item tree "HEAD")
-         header-value (fn [tag] (find-item-value header tag))
+   (let [header (find-item "HEAD" tree)
+         header-value (fn [tag] (find-item-value tag header))
          add-submitter (fn [m]
                          (if-let [xref (header-value "SUBM")]
-                           (assoc m :submitter {:name (find-item-value (find-xref tree xref) "NAME")
+                           (assoc m :submitter {:name (find-item-value "NAME" (find-xref tree xref))
                                                 :xref xref})
                            m))
          add-source (fn [m]
-                      (let [source (find-item header "SOUR")]
-                        (assoc m :source (:value (or (find-item source "NAME")
+                      (let [source (find-item "SOUR" header)]
+                        (assoc m :source (:value (or (find-item "NAME" source)
                                                      source)))))
          add-start-record (fn [m xref]
                             (if-let [record
                                      (or (and xref (find-xref tree xref))
-                                         (find-item tree "INDI"))]
+                                         (find-item "INDI" tree))]
                               (assoc m
                                      :start-record
-                                     {:name (find-item-value record "NAME")
+                                     {:name (find-item-value "NAME" record)
                                       :xref (:xref record)})
                               m))]
      (-> {:number-of-records (count (:subordinate-lines tree))
           :destination (header-value "DEST")
           :file (header-value "FILE")
           :file-time (header-value "DATE")
-          :gedcom {:version (find-item-value (find-item header "GEDC") "VERS")
-                   :type (find-item-value (find-item header "GEDC") "FORM")}
+          :gedcom {:version (find-item-value "VERS" (find-item "GEDC" header))
+                   :type (find-item-value "FORM" (find-item "GEDC" header))}
           :encoding (header-value "CHAR")}
          (add-source)
          (add-submitter)
@@ -58,39 +58,39 @@
 (defn- add-event-info [m k e]
   (if e
     (assoc m k
-           {:date (find-item-value e "DATE")
-            :place (find-item-value e "PLAC")})
+           {:date (find-item-value "DATE" e)
+            :place (find-item-value "PLAC" e)})
     m))
 
 (defn- person-info [r]
-  {:xref (:xref r) :name (find-item-value r "NAME")})
+  {:xref (:xref r) :name (find-item-value "NAME" r)})
 
 (defn- spouse-info [tree i fams]
   (let [xref (:value fams)
         family (find-xref tree xref)
-        spouses (map #(find-item-value family %)
+        spouses (map #(find-item-value % family)
                      '("HUSB" "WIFE"))
         spouse-xref (first (filter #(not (= % (:xref i))) spouses))
         other-person (find-xref tree spouse-xref)]
     {:xref xref
      :spouse {:xref (:xref other-person)
-              :name (find-item-value other-person "NAME")}}))
+              :name (find-item-value "NAME" other-person)}}))
 
 (defn- make-record [tree raw-record]
     (-> {:type (type-of raw-record)}
 
         (add-value :name (map :value (find-items "NAME" raw-record)))
-        (add-value :sex (find-item-value raw-record "SEX"))
-        (add-value :family-as-child (find-item-value raw-record "FAMC"))
+        (add-value :sex (find-item-value "SEX" raw-record))
+        (add-value :family-as-child (find-item-value "FAMC" raw-record))
         (add-value :family-as-spouse (map #(spouse-info tree raw-record %) (find-items "FAMS" raw-record)))
-        (add-event-info :birth (find-item raw-record "BIRT"))
-        (add-event-info :death (find-item raw-record "DEAT"))
-        (add-event-info :burial (find-item raw-record "BURI"))
+        (add-event-info :birth (find-item "BIRT" raw-record))
+        (add-event-info :death (find-item "DEAT" raw-record))
+        (add-event-info :burial (find-item "BURI" raw-record))
 
         (add-value :spouses
-                   [(person-info (find-xref tree (find-item-value raw-record "HUSB")))
-                    (person-info (find-xref tree (find-item-value raw-record "WIFE")))])
-        (add-event-info :marriage (find-item raw-record "MARR"))
+                   [(person-info (find-xref tree (find-item-value "HUSB" raw-record)))
+                    (person-info (find-xref tree (find-item-value "WIFE" raw-record)))])
+        (add-event-info :marriage (find-item "MARR" raw-record))
         (add-value :children
                    (map #(person-info (find-xref tree (:value %)))
                         (find-items "CHIL" raw-record))))  )
@@ -101,5 +101,5 @@
 (defn search [tree query]
   (->> tree
        (find-items "INDI")
-       (filter #(.contains (find-item-value % "NAME") query))
+       (filter #(.contains (find-item-value "NAME" %) query))
        (map #(make-record tree %))))
