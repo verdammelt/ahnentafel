@@ -86,3 +86,35 @@
              {:date "8 MAY 1885" :place "Logan,Cache,Utah"}))
       (is (= (:children record)
              [{:xref "@I52@" :name "William Russell /Hartley/"}])))))
+
+(deftest search
+  (testing "no result"
+    (is (= (query/search test-tree "name not found") [])))
+  (testing "one result"
+    (let [results (query/search test-tree "William Russell /Hartley/")
+          record (first results)]
+      (is (= (count results) 1))
+
+      (is (= (:type record) :individual))
+      (is (= (:name record) '("William Russell /Hartley/")))
+      (is (= (:sex record) "M"))
+      (is (= (:birth record) {:date "27 NOV 1892" :place "Pleasant Green,Salt Lake,Utah"}))
+      (is (= (:death record) {:date "29 JAN 1977" :place "Lethbridge,Alberta,Canada"}))
+      (is (= (:burial record) {:date "2 FEB 1977" :place "Stirling,Alberta,Canada"}))
+      (is (= (:family-as-child record) "@F661@"))))
+
+  (testing "many results"
+    (let [results (query/search test-tree "Hartley")]
+      (is (= (count results) 4))
+
+      ;; spot check that we are getting different records
+      (is (= (map :name results)
+             '[("William Russell /Hartley/")
+               ("William /Hartley/")
+               ("David /Hartley/")
+               ("William /Hartley/")]))
+      (is (= (map #(get-in % '(:birth :date)) results)
+             '("27 NOV 1892"
+               "16 JAN 1864"
+               "Abt 1807"
+               "1 NOV 1833"))))))

@@ -1,10 +1,10 @@
 (ns ahnentafel.gedcom.query)
 
-(defn- find-items [tree tag]
+(defn- find-items [tag tree]
   (filter #(= tag (:tag %)) (:subordinate-lines tree)))
 
 (defn- find-item [tree tag]
-  (first (find-items tree tag)))
+  (first (find-items tag tree)))
 
 (defn- find-xref [tree xref]
   (first (filter #(= xref (:xref %)) (:subordinate-lines tree))))
@@ -46,52 +46,60 @@
          (add-submitter)
          (add-start-record start-record)))))
 
-(defn find-record [tree query]
-  (let [record (find-xref tree (:xref query))
-        type-of (fn [r] (get {"INDI" :individual
-                             "SUBM" :submitter
-                             "FAM" :family}
-                            (:tag r)
-                            :unknown))
+(defn- type-of [record]
+  (get {"INDI" :individual
+        "SUBM" :submitter
+        "FAM" :family}
+       (:tag record)
+       :unknown))
 
-        add-value (fn [m k v] (if (not (empty? v)) (assoc m k v) m))
+(defn- add-value [m k v] (if (not (empty? v)) (assoc m k v) m))
 
-        add-event-info (fn [m k e]
-                         (if e
-                           (assoc m k
-                                  {:date (find-item-value e "DATE")
-                                   :place (find-item-value e "PLAC")})
-                           m))
+(defn- add-event-info [m k e]
+  (if e
+    (assoc m k
+           {:date (find-item-value e "DATE")
+            :place (find-item-value e "PLAC")})
+    m))
 
-        person-info (fn [r]
-                      {:xref (:xref r)
-                       :name (find-item-value r "NAME")})
+(defn- person-info [r]
+  {:xref (:xref r) :name (find-item-value r "NAME")})
 
-        spouse-info (fn [i fams]
-                      (let [xref (:value fams)
-                            family (find-xref tree xref)
-                            spouses (map #(find-item-value family %)
-                                         '("HUSB" "WIFE"))
-                            spouse-xref (first (filter #(not (= % (:xref i))) spouses))
-                            other-person (find-xref tree spouse-xref)]
-                        {:xref xref
-                         :spouse {:xref (:xref other-person)
-                                  :name (find-item-value other-person "NAME")}}))
-        ]
-    (-> {:type (type-of record)}
+(defn- spouse-info [tree i fams]
+  (let [xref (:value fams)
+        family (find-xref tree xref)
+        spouses (map #(find-item-value family %)
+                     '("HUSB" "WIFE"))
+        spouse-xref (first (filter #(not (= % (:xref i))) spouses))
+        other-person (find-xref tree spouse-xref)]
+    {:xref xref
+     :spouse {:xref (:xref other-person)
+              :name (find-item-value other-person "NAME")}}))
 
-        (add-value :name (map :value (find-items record "NAME")))
-        (add-value :sex (find-item-value record "SEX"))
-        (add-value :family-as-child (find-item-value record "FAMC"))
-        (add-value :family-as-spouse (map #(spouse-info record %) (find-items record "FAMS")))
-        (add-event-info :birth (find-item record "BIRT"))
-        (add-event-info :death (find-item record "DEAT"))
-        (add-event-info :burial (find-item record "BURI"))
+(defn- make-record [tree raw-record]
+    (-> {:type (type-of raw-record)}
+
+        (add-value :name (map :value (find-items "NAME" raw-record)))
+        (add-value :sex (find-item-value raw-record "SEX"))
+        (add-value :family-as-child (find-item-value raw-record "FAMC"))
+        (add-value :family-as-spouse (map #(spouse-info tree raw-record %) (find-items "FAMS" raw-record)))
+        (add-event-info :birth (find-item raw-record "BIRT"))
+        (add-event-info :death (find-item raw-record "DEAT"))
+        (add-event-info :burial (find-item raw-record "BURI"))
 
         (add-value :spouses
-                   [(person-info (find-xref tree (find-item-value record "HUSB")))
-                    (person-info (find-xref tree (find-item-value record "WIFE")))])
-        (add-event-info :marriage (find-item record "MARR"))
+                   [(person-info (find-xref tree (find-item-value raw-record "HUSB")))
+                    (person-info (find-xref tree (find-item-value raw-record "WIFE")))])
+        (add-event-info :marriage (find-item raw-record "MARR"))
         (add-value :children
                    (map #(person-info (find-xref tree (:value %)))
-                        (find-items record "CHIL"))))))
+                        (find-items "CHIL" raw-record))))  )
+
+(defn find-record [tree query]
+  (make-record tree (find-xref tree (:xref query))))
+
+(defn search [tree query]
+  (->> tree
+       (find-items "INDI")
+       (filter #(.contains (find-item-value % "NAME") query))
+       (map #(make-record tree %))))
