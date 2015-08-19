@@ -5,13 +5,13 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :min-lein-version "2.0.0"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [compojure "1.3.4"]
-                 [ring "1.3.2"]
+                 [compojure "1.4.0"]
+                 [ring "1.4.0"]
                  [ring/ring-defaults "0.1.5"]
                  [environ "1.0.0"]
-                 [enlive "1.1.5"]
-                 [clj-time "0.9.0"]
-                 [amazonica "0.3.24"]]
+                 [enlive "1.1.6"]
+                 [clj-time "0.11.0"]
+                 [amazonica "0.3.31"]]
 
   :plugins [[lein-ring "0.9.4"]]
 
@@ -35,7 +35,7 @@
     :dependencies [[ring/ring-mock "0.2.0"]
                    [org.clojure/tools.namespace "0.2.10"]
                    [org.clojure/java.classpath "0.2.2"]
-                   [ring/ring-jetty-adapter "1.3.2"]]
+                   [ring/ring-jetty-adapter "1.4.0"]]
     :repl-options {:init (load "reloaded")}
     :aliases {"check-update" ^{:doc "Check for upgrades to dependencies and plugins."}
               ["ancient" ":all"]
