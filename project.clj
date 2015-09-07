@@ -11,9 +11,9 @@
                  [environ "1.0.0"]
                  [enlive "1.1.6"]
                  [clj-time "0.11.0"]
-                 [amazonica "0.3.31"]]
+                 [amazonica "0.3.33"]]
 
-  :plugins [[lein-ring "0.9.4"]]
+  :plugins [[lein-ring "0.9.6"]]
 
   :aot [ahnentafel.gedcom.reading.ParseError]
 
