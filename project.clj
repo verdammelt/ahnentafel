@@ -29,9 +29,7 @@
    :dev
    {:source-paths ["dev"]
     :resource-paths ["test-resources"]
-    :plugins [[lein-ancient "0.6.7"]
-              [lein-bikeshed "0.2.0"]
-              [lein-kibit "0.1.2"]]
+    :plugins [[lein-ancient "0.6.7"]]
     :dependencies [[ring/ring-mock "0.2.0"]
                    [org.clojure/tools.namespace "0.2.10"]
                    [org.clojure/java.classpath "0.2.2"]
@@ -39,9 +37,7 @@
     :repl-options {:init (load "reloaded")}
     :aliases {"check-update" ^{:doc "Check for upgrades to dependencies and plugins."}
               ["ancient" ":all"]
-              "lint" ^{:doc "Check code for linting and style errors."}
-              ["do" ["bikeshed" "-v"] ["kibit"]]
               "package" ^{:doc "Make a stand alone package."}
               ["ring" "uberjar"]
               "build" ^{:doc "Full clean build with tests and linting."}
-              ["do" "clean" ["test"] ["lint"]]}}})
+              ["do" "clean" ["test"]]}}})
