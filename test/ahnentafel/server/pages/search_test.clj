@@ -58,4 +58,10 @@
     (let [page (get-page search "/Doe")]
       (are-on-page "John /Doe (a.k.a. John J. /Doe)"))))
 
-(deftest with-missing-dates)
+(deftest with-missing-dates
+  (with-redefs [query/search
+                (fn [data query]
+                  [{:xref "@I1@"
+                    :name ["John /Doe"]}])]
+    (let [page (get-page search "/Doe")]
+      (are-on-page "( - )"))))
