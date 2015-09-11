@@ -1,10 +1,11 @@
 (ns ahnentafel.server.handler-test
   (:require [ahnentafel.server.handler :refer [make-handler]]
+            [ahnentafel.server.pages
+             [home :refer [home]]
+             [record :refer [record]]
+             [search :refer [search]]]
             [clojure.test :refer :all]
-            [ring.mock.request :as mock])
-  (:require [ahnentafel.server.pages.home :refer [home]]
-            [ahnentafel.server.pages.record :refer [record]]
-            [ahnentafel.gedcom.query :as query]))
+            [ring.mock.request :as mock]))
 
 (deftest handlers
   (let [app-data {:version "x.x.x"}
@@ -29,4 +30,12 @@
        (let [response (get-page "/records/@I23@")]
          (is (= (:status response) 200))
          (is  (= (:body response)
-                 (str "record page: " app-data " " '("@I23@")))))))))
+                 (str "record page: " app-data " " '("@I23@")))))))
+
+   (testing "search page"
+     (with-redefs [search (fn [data & query]
+                            (str "search page: " data " " query))]
+       (let [response (get-page "/search/Smith")]
+         (is (= (:status response) 200))
+         (is (= (:body response)
+                (str "search page: " app-data " " '("Smith")))))))))
