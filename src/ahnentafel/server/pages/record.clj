@@ -74,8 +74,7 @@
   [:#child]
   (html/clone-for [child (:children record)]
                   [:#person-info] (html/set-attr :href (xref-link child))
-                  [:#person-info] (html/content (:name child)))
-  )
+                  [:#person-info] (html/content (:name child))))
 
 (def-layout-template record
   [:#content]
