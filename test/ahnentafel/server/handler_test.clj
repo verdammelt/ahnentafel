@@ -8,7 +8,7 @@
             [ring.mock.request :as mock]))
 
 (deftest handlers
-  (let [app-data {:version "x.x.x"}
+  (let [app-data {:version "x.x.x" :email "foo@example.com"}
         handler (make-handler app-data)
         get-page (fn [url] (handler (mock/request :get url)))]
 
@@ -38,4 +38,10 @@
        (let [response (get-page "/search?name=Smith")]
          (is (= (:status response) 200))
          (is (= (:body response)
-                (str "search page: " app-data " " '("Smith")))))))))
+                (str "search page: " app-data " " '("Smith")))))))
+
+   (testing "contact page"
+     (let [response (get-page "/contact")]
+       (is (= (:status response 200)))
+       (is (.contains (:body response)
+                      "mailto:foo@example.com"))))))

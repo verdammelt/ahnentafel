@@ -10,6 +10,7 @@
         data (future (read-file file))
         app-data {:version (:ahnentafel-version env)
                   :analytics-id (:analytics-id env)
+                  :email (:maintainer-email env "noreply@example.com")
                   :port (:port env)
                   :gedcom-file file
                   :get-data (fn [] @data)
