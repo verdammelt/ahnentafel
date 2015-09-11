@@ -1,4 +1,4 @@
-(defproject ahnentafel "0.1.0-SNAPSHOT"
+(defproject ahnentafel "1.0.0"
   :description "Application to allow browsing of genealogical data."
   :url "http://ahnentafel.herokuapps.com"
   :license {:name "Eclipse Public License"
