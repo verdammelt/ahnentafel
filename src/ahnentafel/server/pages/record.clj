@@ -1,7 +1,7 @@
 (ns ahnentafel.server.pages.record
   (:require [net.cgrand.enlive-html :as html]
             [ahnentafel.server.pages.layout :refer [def-layout-template]]
-            [ahnentafel.server.pages.util :refer [xref-link]])
+            [ahnentafel.server.pages.util :refer :all])
   (:require [ahnentafel.gedcom.query :as query]))
 
 
@@ -17,11 +17,6 @@
 (defn- event-info [label event]
   (clojure.string/join " "
                        (remove nil? [label (:date event) (:place event)])))
-
-(defn- format-names [name & akas]
-  (str name
-       (if akas
-         (str " (a.k.a. " (clojure.string/join ", " akas) ")"))))
 
 (html/defsnippet individual-page-snippet "site/templates/record.html" [:div#individual-record]
   [record]
@@ -74,8 +69,7 @@
   [:#child]
   (html/clone-for [child (:children record)]
                   [:#person-info] (html/set-attr :href (xref-link child))
-                  [:#person-info] (html/content (:name child)))
-  )
+                  [:#person-info] (html/content (:name child))))
 
 (def-layout-template record
   [:#content]

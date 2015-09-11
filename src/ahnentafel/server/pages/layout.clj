@@ -1,7 +1,6 @@
 (ns ahnentafel.server.pages.layout
   (:require [net.cgrand.enlive-html :as html]))
 
-
 (html/defsnippet analytics-snippet
   "site/templates/analytics.html" [:script#analytics]
   [analytics-id]

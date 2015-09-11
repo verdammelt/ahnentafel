@@ -1,5 +1,6 @@
 (ns ahnentafel.server.handler
   (:require [ahnentafel.server.pages.home :refer [home]])
+  (:require [ahnentafel.server.pages.search :refer [search]])
   (:require [ahnentafel.server.pages.record :refer [record]])
   (:require [ahnentafel.server.pages.not-found :refer [not-found]])
   (:require [ahnentafel.server.pages.about :refer [about]])
@@ -15,6 +16,7 @@
        (GET "/" [] (home app-data))
        (GET "/about" [] (about app-data))
        (GET "/records/:xref" [xref] (record app-data xref))
+       (GET "/search" {params :query-params} (search app-data (get params "name")))
        (ANY "*" request (-> (not-found app-data request)
                             response/response
                             (response/status 404)

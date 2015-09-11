@@ -39,6 +39,8 @@ CLOSED: [2015-05-02 Sat 15:38]
 
 * Backlog
 ** DONE Lots of duplication in test/production code due to structure.
+** Improve searching:
+*** surname slashes can be useful (sometimes)
 ** Refactor subordinate-lines to take a zip
 Then each function could take a zip and return a zipper finally at the
 end of process we zip/root
