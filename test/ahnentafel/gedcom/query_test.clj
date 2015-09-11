@@ -118,4 +118,18 @@
              '("27 NOV 1892"
                "16 JAN 1864"
                "Abt 1807"
-               "1 NOV 1833"))))))
+               "1 NOV 1833")))))
+
+  (testing "case insensitive"
+    (let [results (query/search test-tree "hartley")]
+      (is (= (count results) 4))))
+
+  (testing "ignore surname slashes"
+    (let [results (query/search test-tree "david hartley")]
+      (is (= (count results) 1))))
+
+  (testing "finding in all names"
+    (let [test-tree (read-file "resource:allged.ged")
+          results (query/search test-tree "another name /surname/")]
+      (is (= (count results) 1))))
+  )

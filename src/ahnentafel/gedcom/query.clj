@@ -1,4 +1,5 @@
-(ns ahnentafel.gedcom.query)
+(ns ahnentafel.gedcom.query
+  (:require [clojure.string :as str]))
 
 (defn- find-items [tag tree]
   (filter #(= tag (:tag %)) (:subordinate-lines tree)))
@@ -100,7 +101,13 @@
   (make-record tree (find-xref tree (:xref query))))
 
 (defn search [tree query]
-  (->> tree
-       (find-items "INDI")
-       (filter #(.contains (find-item-value "NAME" %) query))
-       (map #(make-record tree %))))
+  (letfn [(fix-string [s]
+            (-> s
+                (str/replace "/" "")
+                str/lower-case))]
+    (->> tree
+         (find-items "INDI")
+         (filter #(.contains
+                   (fix-string (apply str (map :value (find-items "NAME" %))))
+                   (fix-string query)))
+         (map #(make-record tree %)))))
