@@ -35,7 +35,7 @@
    (testing "search page"
      (with-redefs [search (fn [data & query]
                             (str "search page: " data " " query))]
-       (let [response (get-page "/search/Smith")]
+       (let [response (get-page "/search?name=Smith")]
          (is (= (:status response) 200))
          (is (= (:body response)
                 (str "search page: " app-data " " '("Smith")))))))))

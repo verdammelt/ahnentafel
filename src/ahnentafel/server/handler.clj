@@ -16,7 +16,7 @@
        (GET "/" [] (home app-data))
        (GET "/about" [] (about app-data))
        (GET "/records/:xref" [xref] (record app-data xref))
-       (GET "/search/:query" [query] (search app-data query))
+       (GET "/search" {params :query-params} (search app-data (get params "name")))
        (ANY "*" request (-> (not-found app-data request)
                             response/response
                             (response/status 404)
