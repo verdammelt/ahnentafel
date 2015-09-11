@@ -77,23 +77,24 @@
               :name (find-item-value "NAME" other-person)}}))
 
 (defn- make-record [tree raw-record]
-    (-> {:type (type-of raw-record)}
+  (-> {:type (type-of raw-record)
+       :xref (:xref raw-record)}
 
-        (add-value :name (map :value (find-items "NAME" raw-record)))
-        (add-value :sex (find-item-value "SEX" raw-record))
-        (add-value :family-as-child (find-item-value "FAMC" raw-record))
-        (add-value :family-as-spouse (map #(spouse-info tree raw-record %) (find-items "FAMS" raw-record)))
-        (add-event-info :birth (find-item "BIRT" raw-record))
-        (add-event-info :death (find-item "DEAT" raw-record))
-        (add-event-info :burial (find-item "BURI" raw-record))
+      (add-value :name (map :value (find-items "NAME" raw-record)))
+      (add-value :sex (find-item-value "SEX" raw-record))
+      (add-value :family-as-child (find-item-value "FAMC" raw-record))
+      (add-value :family-as-spouse (map #(spouse-info tree raw-record %) (find-items "FAMS" raw-record)))
+      (add-event-info :birth (find-item "BIRT" raw-record))
+      (add-event-info :death (find-item "DEAT" raw-record))
+      (add-event-info :burial (find-item "BURI" raw-record))
 
-        (add-value :spouses
-                   [(person-info (find-xref tree (find-item-value "HUSB" raw-record)))
-                    (person-info (find-xref tree (find-item-value "WIFE" raw-record)))])
-        (add-event-info :marriage (find-item "MARR" raw-record))
-        (add-value :children
-                   (map #(person-info (find-xref tree (:value %)))
-                        (find-items "CHIL" raw-record))))  )
+      (add-value :spouses
+                 [(person-info (find-xref tree (find-item-value "HUSB" raw-record)))
+                  (person-info (find-xref tree (find-item-value "WIFE" raw-record)))])
+      (add-event-info :marriage (find-item "MARR" raw-record))
+      (add-value :children
+                 (map #(person-info (find-xref tree (:value %)))
+                      (find-items "CHIL" raw-record))))  )
 
 (defn find-record [tree query]
   (make-record tree (find-xref tree (:xref query))))

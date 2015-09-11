@@ -95,6 +95,7 @@
           record (first results)]
       (is (= (count results) 1))
 
+      (is (= (:xref record) "@I52@"))
       (is (= (:type record) :individual))
       (is (= (:name record) '("William Russell /Hartley/")))
       (is (= (:sex record) "M"))
