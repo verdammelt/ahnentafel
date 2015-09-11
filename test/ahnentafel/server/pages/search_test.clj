@@ -30,6 +30,23 @@
        "<a href=\"/records/@I1@\" id=\"record-link\">John /Doe</a>"
        "(1 Jan 1970 - 1 Jan 2000)"))))
 
-(deftest multiple-results)
+(deftest multiple-results
+  (with-redefs [query/search
+                (fn [data query]
+                  [{:xref "@I1@"
+                    :name ["John /Doe"]
+                    :birth {:date "1 Jan 1970"}
+                    :death {:date "1 Jan 2000"}}
+                   {:xref "@I2@"
+                    :name ["Jane /Doe"]
+                    :birth {:date "2 Jan 1970"}
+                    :death {:date "2 Jan 2000"}}]
+                  )]
+    (let [page (get-page search "/Doe")]
+      (are-on-page
+       "2 records found for"
+       "<a href=\"/records/@I1@\" id=\"record-link\">John /Doe</a>"
+       "<a href=\"/records/@I2@\" id=\"record-link\">Jane /Doe</a>"))))
+
 (deftest result-with-multiple-names)
 (deftest with-missing-dates)
