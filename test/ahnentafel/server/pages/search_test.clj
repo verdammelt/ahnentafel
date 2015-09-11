@@ -48,5 +48,14 @@
        "<a href=\"/records/@I1@\" id=\"record-link\">John /Doe</a>"
        "<a href=\"/records/@I2@\" id=\"record-link\">Jane /Doe</a>"))))
 
-(deftest result-with-multiple-names)
+(deftest result-with-multiple-names
+  (with-redefs [query/search
+                (fn [data query]
+                  [{:xref "@I1@"
+                    :name ["John /Doe" "John J. /Doe"]
+                    :birth {:date "yesterday"}
+                    :death {:date "today"}}])]
+    (let [page (get-page search "/Doe")]
+      (are-on-page "John /Doe (a.k.a. John J. /Doe)"))))
+
 (deftest with-missing-dates)
