@@ -30,9 +30,9 @@ CLOSED: [2015-05-02 Sat 15:38]
 ** DONE Follow links on family to see other people
 ** DONE Some people are spouses in more than one family (e.g. @I56@ in simpson.ged)
 ** DONE Serve up data file from S3 - so I can remove simpson.ged.
-* Release #4 
-** User can search for specific person (first & last name)
-** Search can return multiple matches
+* DONE Release #4 
+** DONE User can search for specific person (first & last name)
+** DONE Search can return multiple matches
 * Release #5 
 ** User can send me an email with data to add
 
