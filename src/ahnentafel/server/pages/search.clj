@@ -1,5 +1,6 @@
 (ns ahnentafel.server.pages.search
-  (:require [ahnentafel.gedcom.query :as query]
+  (:require [clojure.pprint :as pprint]
+            [ahnentafel.gedcom.query :as query]
             [ahnentafel.server.pages.layout :refer [def-layout-template]]
             [ahnentafel.server.pages.util :refer :all]
             [net.cgrand.enlive-html :as html]))
@@ -11,8 +12,8 @@
 
   [:span#description]
   (html/content
-   (clojure.pprint/cl-format nil "~[No~:;~:*~D~] record~:P found for \"~A\""
-                             (count results) query))
+   (pprint/cl-format nil "~[No~:;~:*~D~] record~:P found for \"~A\""
+                     (count results) query))
 
   [:ul#result-list :li]
   (html/clone-for [result results]
