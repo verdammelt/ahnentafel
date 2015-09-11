@@ -33,7 +33,7 @@
     :dependencies [[ring/ring-mock "0.3.0"]
                    [org.clojure/tools.namespace "0.2.10"]
                    [org.clojure/java.classpath "0.2.2"]
-                   [ring/ring-jetty-adapter "1.4.0"]]
+                   [ring/ring-jetty-adapter "1.4.0-beta1"]]
     :repl-options {:init (load "reloaded")}
     :aliases {"check-update" ^{:doc "Check for upgrades to dependencies and plugins."}
               ["ancient" ":all"]
