@@ -1,9 +1,11 @@
 (ns ahnentafel.server.pages.record-test
-  (:require [ahnentafel.server.pages.record :refer :all])
+  (:require [ahnentafel.server.pages.record :refer :all]
+            [net.cgrand.enlive-html :as html])
 
   (:require [ahnentafel.server.pages.test-utils :refer :all])
   (:require [ahnentafel.gedcom.query :as query])
-  (:require [clojure.test :refer :all]))
+  (:require [clojure.test :refer :all])
+  (:import java.io.StringReader))
 
 (deftest individual-record-test
   (testing "maximum data"
@@ -26,18 +28,30 @@
                                            {:xref "@FAM3@"
                                             :spouse {:xref "@I23@" :name "Jane /Smith"}})
                        })]
-        (let [page (get-page record "@I23@")]
+        (let [page (html/html-resource (StringReader. (get-page record "@I23@")))]
           (is (= @trapped-query {:xref "@I23@"}))
-          (are-on-page
-           "INDIVIDUAL"
-           "Bob Smith (a.k.a. Robert Smith, The Guy from The Cure)"
-           "Sex: M"
-           "Born: 1 JAN 1970 00:00:00 near his mother"
-           "Died: 1 JAN 2000 00:00:00 graveside"
-           "Buried: 2 JAN 2000 00:00:00 6 feet under"
-           "<a id=\"parent-link\" href=\"/records/@FAM1@\">View parents</a>"
-           "<a id=\"spouse-link\" href=\"/records/@FAM2@\">View family with <span id=\"spouse-name\">Mary /Jones</span></a>"
-           "<a id=\"spouse-link\" href=\"/records/@FAM3@\">View family with <span id=\"spouse-name\">Jane /Smith</span></a>")))))
+          (let [type (contents-of-element page [:div#type])]
+            (is (= '("INDIVIDUAL") (map first type))))
+          (let [names (contents-of-element page [:div#names])]
+            (is (= '("Bob Smith (a.k.a. Robert Smith, The Guy from The Cure)") (map first names))))
+          (let [gender (contents-of-element page [:div#sex])]
+            (is (= '("Sex: M" (map first names)))))
+          (let [birth (contents-of-element page [:div#birth])]
+            (is (= '("Born: 1 JAN 1970 00:00:00 near his mother") (map first birth))))
+          (let [death (contents-of-element page [:div#death])]
+            (is (= '("Died: 1 JAN 2000 00:00:00 graveside"))))
+          (let [burial (contents-of-element page [:div#burial])]
+            (is (= '("Buried: 2 JAN 2000 00:00:00 6 feet under"))))
+          (let [as-child (contents-of-element page [:div#family-as-child])]
+            (is (= '("View parents") (flatten (map #(-> % first html/unwrap) as-child))))
+            (is (= '("/records/@FAM1@") (flatten (map #(-> % first :attrs :href) as-child)))))
+          (let [as-spouse (contents-of-element page [:div#family-as-spouse])]
+            (is (= '("View family with " "View family with ")
+                   (flatten (map #(-> % first html/unwrap first) as-spouse))))
+            (is (= '("Mary /Jones" "Jane /Smith")
+                   (flatten (map #(-> % first html/unwrap second html/unwrap) as-spouse))))
+            (is (= '("/records/@FAM2@" "/records/@FAM3@")
+                   (flatten (map #(-> % first :attrs :href) as-spouse)))))))))
 
   (testing "with parts missing"
     (with-redefs [query/find-record
@@ -59,12 +73,18 @@
                                   :place "church"}
                        :children [{:xref "@I3@" :name "Bob"}
                                   {:xref "@I4@" :name "Alice"}]})]
-        (let [page (get-page record "@FAM1@")]
+        (let [page (html/html-resource (StringReader. (get-page record "@FAM1@")))]
           (is (= @trapped-query {:xref "@FAM1@"}))
-          (are-on-page
-           "FAMILY"
-           "Spouse: <a id=\"person-info\" href=\"/records/@I1@\">Ted</a>"
-           "Spouse: <a id=\"person-info\" href=\"/records/@I2@\">Carol</a>"
-           "Married: <span id=\"event-info\">1 JAN 2000 00:00:00 church</span>"
-           "Child: <a id=\"person-info\" href=\"/records/@I3@\">Bob</a>"
-           "Child: <a id=\"person-info\" href=\"/records/@I4@\">Alice</a>"))))))
+          (let [type (contents-of-element page [:div#type])]
+            (is (= '("FAMILY") (map first type))))
+          (let [spouses (contents-of-element page [:div#spouse])]
+            (is (= '("Spouse: " "Spouse: ") (map first spouses)))
+            (is (= '("Ted" "Carol") (flatten (map #(-> % second html/unwrap) spouses))))
+            (is (= '("/records/@I1@" "/records/@I2@") (flatten (map #(-> % second :attrs :href) spouses)))))
+          (let [marriages (contents-of-element page [:div#married])]
+            (is (= '("Married: ") (map first marriages)))
+            (is (= '("1 JAN 2000 00:00:00 church") (flatten (map #(-> % second html/unwrap) marriages)))))
+          (let [children (map html/unwrap (html/select page [:div#child]))]
+            (is (= '("Child: " "Child: ") (map first children)))
+            (is (= '("Bob" "Alice") (flatten (map #(-> % second html/unwrap) children))))
+            (is (= '("/records/@I3@" "/records/@I4@") (flatten (map #(-> % second :attrs :href) children))))))))))

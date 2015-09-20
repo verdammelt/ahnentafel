@@ -1,5 +1,6 @@
 (ns ahnentafel.server.pages.test-utils
-  (:require [clojure.test :refer :all]))
+  (:require [clojure.test :refer :all]
+            [net.cgrand.enlive-html :as html]))
 
 (defn get-page [page & args]
   (apply str (apply page
@@ -7,6 +8,9 @@
                     :gedcom-file "/path/to/test.ged"
                      :get-data (fn [] 'fake-data)}
                     args)))
+
+(defn contents-of-element [nodes selector]
+  (map html/unwrap (html/select nodes selector)))
 
 (defmethod assert-expr 'page-contains? [msg form]
   (let [text (nth form 1)
