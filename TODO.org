@@ -39,6 +39,7 @@ CLOSED: [2015-05-02 Sat 15:38]
 
 * Backlog
 ** DONE Lots of duplication in test/production code due to structure.
+** Improve page tests - hard to read.
 ** Improve searching:
 *** surname slashes can be useful (sometimes)
 ** Refactor subordinate-lines to take a zip
