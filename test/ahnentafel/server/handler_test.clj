@@ -42,6 +42,6 @@
 
    (testing "contact page"
      (let [response (get-page "/contact")]
-       (is (= (:status response 200)))
+       (is (= (:status response) 200))
        (is (.contains (:body response)
                       "mailto:foo@example.com"))))))

@@ -35,13 +35,13 @@
           (let [names (contents-of-element page [:div#names])]
             (is (= '("Bob Smith (a.k.a. Robert Smith, The Guy from The Cure)") (map first names))))
           (let [gender (contents-of-element page [:div#sex])]
-            (is (= '("Sex: M" (map first names)))))
+            (is (= '("Sex: M") (first gender))))
           (let [birth (contents-of-element page [:div#birth])]
             (is (= '("Born: 1 JAN 1970 00:00:00 near his mother") (map first birth))))
           (let [death (contents-of-element page [:div#death])]
-            (is (= '("Died: 1 JAN 2000 00:00:00 graveside"))))
+            (is (= '("Died: 1 JAN 2000 00:00:00 graveside") (first death))))
           (let [burial (contents-of-element page [:div#burial])]
-            (is (= '("Buried: 2 JAN 2000 00:00:00 6 feet under"))))
+            (is (= '("Buried: 2 JAN 2000 00:00:00 6 feet under") (first burial))))
           (let [as-child (contents-of-element page [:div#family-as-child])]
             (is (= '("View parents") (flatten (map #(-> % first html/unwrap) as-child))))
             (is (= '("/records/@FAM1@") (flatten (map #(-> % first :attrs :href) as-child)))))

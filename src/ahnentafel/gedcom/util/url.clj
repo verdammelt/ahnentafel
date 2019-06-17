@@ -12,7 +12,6 @@
       "resource" (clojure.java.io/resource (.getSchemeSpecificPart uri))
       "s3" (s3/generate-presigned-url (.getAuthority uri)
                                       (subs (.getPath uri) 1)
-                                      (time-coerce/to-long
-                                       (time-core/plus
-                                        (time-core/now)
-                                        (time-core/minutes 5)))))))
+                                      (time-core/plus
+                                       (time-core/now)
+                                       (time-core/minutes 5))))))
